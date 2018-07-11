@@ -1,0 +1,39 @@
+#!/bin/bash
+# verify - Verify an SSL certificate, specified by a short hostname.
+# verify <shorthostname>
+
+. common.sh || {
+  echo 'Error:  Current directory looks wrong.  Exiting.' >&2
+  exit 1
+}
+
+
+if test $# -ne 1; then
+  fail $ERR_USAGE "Specify one short hostname."
+fi
+
+
+# sanity check
+
+for prereq in cert_chain ca_intermediate_crl host_cert; do
+  if ! test -e "${!prereq}"; then
+    fail $ERR_PREREQ "Required file does not exist (${prereq}):  ${!prereq}"
+  fi
+done
+
+
+# verify
+
+crl_chain=/tmp/crl_chain
+if test -e "${crl_chain}"; then
+  fail $ERR_PREREQ "This file should not exist:  ${crl_chain}"
+fi
+
+cat "${cert_chain}" "${ca_intermediate_crl}" > "${crl_chain}"
+
+openssl verify -crl_check -CAfile "${crl_chain}" "${host_cert}" \
+|| fail $ERR_CERT "Failed to verify certificate:  ${host_cert}"
+inform "Verified certificate:  ${host_cert}"
+
+rm "${crl_chain}" \
+|| fail $ERR_PREREQ "Failed to remove file:  ${crl_chain}"

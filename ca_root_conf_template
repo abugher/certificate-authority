@@ -1,0 +1,99 @@
+HOME                    = .
+RANDFILE                = $ENV::HOME/.rnd
+
+[ policy_match ]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ policy_anything ]
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ req ]
+prompt                  = no
+req_extensions          = v3_req
+default_bits            = 4096
+distinguished_name      = req_distinguished_name
+x509_extensions         = v3_req
+string_mask             = utf8only
+default_md              = sha256
+
+[ req_distinguished_name ]
+commonName              = root.ca.DOMAIN
+countryName             = US
+
+[ server_cert ]
+basicConstraints        = CA:FALSE
+nsCertType              = server
+nsComment               = "OpenSSL Generated Server Certificate"
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid,issuer:always
+keyUsage                = critical, digitalSignature, keyEncipherment
+extendedKeyUsage        = serverAuth
+
+[ v3_req ]
+basicConstraints        = CA:FALSE
+keyUsage                = nonRepudiation, digitalSignature, keyEncipherment
+crlDistributionPoints   = URI:http://ca.DOMAIN/root.crl.der
+
+[ v3_ca ]
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always,issuer
+basicConstraints        = critical,CA:true
+nameConstraints         = @name_constraints
+keyUsage                = critical, digitalSignature, cRLSign, keyCertSign
+
+[ crl_ext ]
+authorityKeyIdentifier  = keyid:always
+
+[ ca ]
+default_ca	        = CA_default
+
+[ CA_default ]
+dir                     = /home/aaron/code/fleet/ssl/ca/root
+sdir                    = /home/aaron/code/sensitive/ssl/ca/root
+database                = $dir/index.txt
+new_certs_dir           = $dir/newcerts
+certificate             = $dir/cert.pem
+serial                  = $dir/serial
+crlnumber               = $dir/crlnumber
+crl                     = $dir/crl.pem
+private_key             = $sdir/key.pem
+RANDFILE                = $sdir/rand
+x509_extensions         = usr_cert
+name_opt                = ca_default
+cert_opt                = ca_default
+copy_extensions         = copy
+default_days            = 3650
+default_crl_days        = 30
+default_md              = default
+preserve                = no
+policy                  = policy_match
+default_md              = sha256
+crl_extensions          = crl_ext
+unique_subject          = no
+
+[ name_constraints ]
+permitted;DNS.1         = DOMAIN
+
+[ usr_cert ]
+basicConstraints        = CA:FALSE
+nsComment               = ""
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid,issuer
+
+[ v3_intermediate_ca ]
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always,issuer
+basicConstraints        = critical, CA:true, pathlen:0
+keyUsage                = critical, digitalSignature, cRLSign, keyCertSign
+

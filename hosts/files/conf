@@ -1,0 +1,71 @@
+HOME                    = .
+RANDFILE                = $ENV::HOME/.rnd
+
+[ req ]
+prompt                  = no
+req_extensions          = v3_req
+default_bits            = 2048
+distinguished_name      = req_distinguished_name
+x509_extensions         = v3_req
+string_mask             = utf8only
+default_md              = sha256
+
+[ req_distinguished_name ]
+commonName              = files.neuronpointer.net
+
+[ server_cert ]
+basicConstraints        = CA:FALSE
+nsCertType              = server
+nsComment               = ""
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid,issuer:always
+keyUsage                = critical, digitalSignature, keyEncipherment
+extendedKeyUsage        = serverAuth
+
+[ v3_req ]
+basicConstraints        = CA:FALSE
+keyUsage                = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName          = @alt_names
+crlDistributionPoints   = URI:http://ca.neuronpointer.net/intermediate.crl.der
+
+[ crl_ext ]
+authorityKeyIdentifier  = keyid:always
+
+[ ca ]
+default_ca	        = CA_default
+
+[ CA_default ]
+dir                     = /home/aaron/code/fleet/ssl/ca/intermediate
+sdir                    = /home/aaron/code/sensitive/ssl/ca/intermediate
+database                = $dir/index.txt
+new_certs_dir           = $dir/newcerts
+certificate             = $dir/cert.pem
+serial                  = $dir/serial
+crlnumber               = $dir/crlnumber
+crl                     = $dir/crl.pem
+private_key             = $sdir/key.pem
+RANDFILE                = $sdir/rand
+x509_extensions         = usr_cert
+name_opt                = ca_default
+cert_opt                = ca_default
+copy_extensions         = copy
+default_days            = 3650
+default_crl_days        = 30
+default_md              = default
+preserve                = no
+policy                  = policy_token
+default_md              = sha256
+crl_extensions          = crl_ext
+unique_subject          = no
+
+[ policy_token ]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ alt_names ]
+DNS.1                   = files.neuronpointer.net
+DNS.2                   = transmission.neuronpointer.net
