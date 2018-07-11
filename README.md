@@ -12,9 +12,9 @@ This is sort of a certificate factory.  Material from CSR to signed certificates
 
 # Usage
 
-  generate [hostname] ...
+  `generate [hostname] ...`
 
-  revoke &lt;hostname&gt;
+  `revoke <hostname>`
 
 Run generate to generate SSL material.  Specify all short names for a host, starting with the most canonical, and both the short name and the short name combined with a fixed domain will be provisioned.  At least one short name must be specified.  This will generate a certificate, certificate chain, and certificate revocation list.
 
