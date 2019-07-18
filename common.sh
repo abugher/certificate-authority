@@ -14,8 +14,8 @@
 
                                   prefix="${0}:  "
 
-                                  public=~/code/github/abugher/certificate_authority
-                               sensitive=~/code/sensitive/ssl
+                                  public=.
+                               sensitive=../sensitive_certificate_authority
 
                              ca_root_dir=${public}/ca/root
                         ca_root_newcerts=${ca_root_dir}/newcerts

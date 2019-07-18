@@ -5,8 +5,8 @@ RANDFILE                = $ENV::HOME/.rnd
 default_ca	        = CA_default
 
 [ CA_default ]
-dir                     = /home/aaron/code/fleet/ssl/ca/intermediate
-sdir                    = /home/aaron/code/sensitive/ssl/ca/intermediate
+dir                     = /home/aaron/control_center/certificate_authority/ca/intermediate
+sdir                    = /home/aaron/control_center/sensitive_certificate_authority/ca/intermediate
 database                = $dir/index.txt
 new_certs_dir           = $dir/newcerts
 certificate             = $dir/cert.pem
