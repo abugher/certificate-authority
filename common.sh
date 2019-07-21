@@ -119,18 +119,24 @@
 
 
 fail() {
-  echo -e "${prefix}Error:  ${2}"
+  printf "%s\n" "${prefix}Error:  ${2}"
   exit $1
 }
 
 
 inform() {
-  echo -e "${prefix}Output:  ${1}"
+  printf "%s\n" "${prefix}Output:  ${1}"
+}
+
+
+prompt() {
+  read -p "${prefix}Prompt:  ${1}  " response
+  printf "%s\n" "${response}"
 }
 
 
 debug() {
-  echo -e "${prefix}Debug:  ${1}"
+  printf "%s\n" "${prefix}Debug:  ${1}"
 }
 
 
@@ -161,4 +167,17 @@ newer_than_deps() {
     fi
   done
   return $is_new
+}
+
+
+touch_ca_material() {
+  touch "${ca_root_dir}"/conf
+  touch "${ca_root_dir}"/cert.pem 
+  touch "${ca_root_dir}"/crl.pem 
+  touch "${ca_root_dir}"/crl.der
+  touch "${ca_intermediate_dir}"/conf
+  touch "${ca_intermediate_dir}"/csr.pem 
+  touch "${ca_intermediate_dir}"/cert.pem 
+  touch "${ca_intermediate_dir}"/crl.pem 
+  touch "${ca_intermediate_dir}"/crl.der
 }

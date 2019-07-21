@@ -59,7 +59,14 @@ else
 fi
 
 if newer_than_deps "${ca_root_conf_template}" "${depend_on_ca_root_conf_template[@]}"; then
-  remove_stale "${depend_on_ca_root_conf_template[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_root_conf_template[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_root_conf}"; then
@@ -74,7 +81,14 @@ else
 fi
 
 if newer_than_deps "${ca_root_conf}" "${depend_on_ca_root_conf[@]}"; then
-  remove_stale "${depend_on_ca_root_conf[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_root_conf[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_root_key}"; then
@@ -97,7 +111,14 @@ else
 fi
 
 if newer_than_deps "${ca_root_key}" "${depend_on_ca_root_key[@]}"; then
-  remove_stale "${depend_on_ca_root_key[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_root_key[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_root_cert}"; then
@@ -109,7 +130,14 @@ else
 fi
 
 if newer_than_deps "${ca_root_cert}" "${depend_on_ca_root_cert[@]}"; then
-  remove_stale "${depend_on_ca_root_cert[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_root_cert[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_root_crl}"; then
@@ -121,7 +149,14 @@ else
 fi
 
 if newer_than_deps "${ca_root_crl}" "${depend_on_ca_root_crl[@]}"; then
-  remove_stale "${depend_on_ca_root_crl[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_root_crl[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_root_crl_der}"; then
@@ -133,7 +168,14 @@ else
 fi
 
 if newer_than_deps "${ca_root_crl_der}" "${depend_on_ca_root_crl_der[@]}"; then
-  remove_stale "${depend_on_ca_root_crl_der[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_root_crl_der[@]}"
+    ;;
+  esac
 fi
 
 
@@ -164,7 +206,14 @@ else
 fi
 
 if newer_than_deps "${ca_intermediate_conf_template}" "${depend_on_ca_intermediate_conf_template[@]}"; then
-  remove_stale "${depend_on_ca_intermediate_conf_template[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_intermediate_conf_template[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_intermediate_conf}"; then
@@ -179,7 +228,14 @@ else
 fi
 
 if newer_than_deps "${ca_intermediate_conf}" "${depend_on_ca_intermediate_conf[@]}"; then
-  remove_stale "${depend_on_ca_intermediate_conf[@]}"
+  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
+  [yY]*)
+    touch_ca_material
+    ;;
+  *)
+    remove_stale "${depend_on_ca_intermediate_conf[@]}"
+    ;;
+  esac
 fi
 
 if ! test -e "${ca_intermediate_key}"; then
