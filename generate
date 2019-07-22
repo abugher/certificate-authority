@@ -12,12 +12,6 @@ source common.sh || {
 }
 
 
-ca_only='no'
-if test $# -lt 1; then
-  #fail $ERR_USAGE "Specify any positive number of short hostnames, starting with the most canonical."
-  ca_only='yes'
-fi
-
 if test 'ca' = "${host}"; then
   fail $ERR_USAGE "'ca' may not be a primary hostname."
 fi
@@ -25,7 +19,7 @@ fi
 
 # sanity check
 
-for prereq in ca_root_conf_template ca_intermediate_conf_template host_conf_template; do
+for prereq in "${prereqs[@]}"; do
   if ! test -e "${!prereq}"; then
     fail $ERR_PREREQ "Required file does not exist:  ${!prereq}"
   fi
