@@ -21,7 +21,7 @@ domain='neuronpointer.net'
 prefix="${0}:  "
 
 public=.
-sensitive=../sensitive_certificate_authority
+sensitive=../../sensitive/control_center/certificate_authority
 
 prereqs=(
   'ca_root_conf_template'
