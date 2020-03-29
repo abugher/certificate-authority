@@ -66,6 +66,21 @@ if test 'no' == "${ca_only}"; then
   cert_chain=${host_dir}/chain.pem
   host_crl=${host_dir}/crl.pem
   host_crl_der=${host_dir}/crl.der
+
+  depend_on_host_conf_template=(
+    $host_conf
+  )
+  depend_on_host_conf=(
+    $host_csr
+  )
+  depend_on_host_csr=(
+    $host_cert
+  )
+  depend_on_host_cert=(
+    $host_chain
+    $host_crl
+    $host_crl_der
+  )
 fi
 
 if test 'no' == "${ca_only}"; then

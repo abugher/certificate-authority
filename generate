@@ -347,6 +347,10 @@ if ! test 'yes' = "${ca_only}"; then
     inform "Conf exists:  ${host_conf}"
   fi
 
+  if newer_than_deps "${host_conf}" "${depend_on_host_conf[@]}"; then
+    remove_stale "${depend_on_host_conf[@]}"
+  fi
+
   if ! test -e "${host_key}"; then
     openssl genrsa -out "${host_key}" 4096 \
     || fail $ERR_GENRSA "Failed to generate host key:  ${host_key}"
