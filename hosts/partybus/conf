@@ -71,3 +71,6 @@ DNS.1                   = partybus.neuronpointer.net
 DNS.2                   = conference.neuronpointer.net
 DNS.3                   = echo.neuronpointer.net
 DNS.4                   = pubsub.neuronpointer.net
+DNS.5                   = conference.partybus.neuronpointer.net
+DNS.6                   = echo.partybus.neuronpointer.net
+DNS.7                   = pubsub.partybus.neuronpointer.net
