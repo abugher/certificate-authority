@@ -2,9 +2,9 @@
 
 If you want to trust this CA, trust these certs:
 
-<a href='https://raw.githubusercontent.com/abugher/fleet/master/ssl/ca/root/cert.pem'>CA root cert</a>
+<a href='https://raw.githubusercontent.com/abugher/certificate_authority/master/root/cert.pem'>CA root cert</a>
 
-<a href='https://raw.githubusercontent.com/abugher/fleet/master/ssl/ca/intermediate/cert.pem'>CA intermediate cert</a>
+<a href='https://raw.githubusercontent.com/abugher/certificate_authority/master/intermediate/cert.pem'>CA intermediate cert</a>
 
 # Background
 
