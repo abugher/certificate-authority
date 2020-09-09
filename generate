@@ -134,6 +134,14 @@ if newer_than_deps "${ca_root_cert}" "${depend_on_ca_root_cert[@]}"; then
   esac
 fi
 
+if ! test -e "${ca_root_cert_der}"; then
+  openssl x509 -outform der -in $ca_root_cert -out $ca_root_cert_der \
+  || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert_der}"
+  inform "Generated certificate:  ${ca_root_cert_der}"
+else
+  inform "Certificate exists:  ${ca_root_cert_der}"
+fi
+
 if ! test -e "${ca_root_crl}"; then
   openssl ca -config "${ca_root_conf}" -gencrl -out "${ca_root_crl}" \
   || fail $ERR_CERT "Failed to generate revocation list:  ${ca_root_crl}"
@@ -267,6 +275,14 @@ if ! test -e "${ca_intermediate_cert}"; then
   remove_stale "${depend_on_ca_intermediate_cert[@]}"
 else
   inform "Certificate exists:  ${ca_intermediate_cert}"
+fi
+
+if ! test -e "${ca_intermediate_cert_der}"; then
+  openssl x509 -outform der -in $ca_intermediate_cert -out $ca_intermediate_cert_der \
+  || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert_der}"
+  inform "Generated certificate:  ${ca_intermediate_cert_der}"
+else
+  inform "Certificate exists:  ${ca_intermediate_cert_der}"
 fi
 
 if ! test -e "${ca_intermediate_crl}"; then

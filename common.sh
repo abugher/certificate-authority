@@ -41,6 +41,7 @@ ca_root_conf_template=${public}/ca_root_conf_template
 ca_root_conf=${ca_root_dir}/conf
 ca_root_key=${ca_root_sensitive_dir}/key.pem
 ca_root_cert=${ca_root_dir}/cert.pem
+ca_root_cert_der=${ca_root_dir}/cert.der
 ca_root_crl=${ca_root_dir}/crl.pem
 ca_root_crl_der=${ca_root_dir}/crl.der
 
@@ -52,6 +53,7 @@ ca_intermediate_conf=${ca_intermediate_dir}/conf
 ca_intermediate_key=${ca_intermediate_sensitive_dir}/key.pem
 ca_intermediate_csr=${ca_intermediate_dir}/csr.pem
 ca_intermediate_cert=${ca_intermediate_dir}/cert.pem
+ca_intermediate_cert_der=${ca_intermediate_dir}/cert.der
 ca_intermediate_crl=${ca_intermediate_dir}/crl.pem
 ca_intermediate_crl_der=${ca_intermediate_dir}/crl.der
 
@@ -102,6 +104,9 @@ if test 'no' == "${ca_only}"; then
     $cert_chain
   )
 fi
+depend_on_ca_root_cert+=(
+  $ca_root_cert_der
+)
 depend_on_ca_root_crl=(
   $ca_root_crl_der
 )
@@ -131,6 +136,9 @@ if test 'no' == "${ca_only}"; then
     $cert_chain
   )
 fi
+depend_on_ca_intermediate_cert+=(
+  $ca_intermediate_cert_der
+)
 depend_on_ca_intermediate_crl=(
   $ca_intermediate_crl_der
 )
