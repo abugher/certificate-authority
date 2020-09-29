@@ -16,7 +16,7 @@ This is sort of a certificate factory.  Material from CSR to signed certificates
 
   `revoke <hostname>`
 
-Run generate to generate SSL material.  Specify all short names for a host, starting with the most canonical, and both the short name and the short name combined with a fixed domain will be provisioned.  At least one short name must be specified.  This will generate a certificate, certificate chain, and certificate revocation list.
+Run generate to generate SSL material.  Specify all short names for a host, starting with the most canonical, and the short name combined with a fixed domain will be provisioned.  At least one short name must be specified.  This will generate a certificate, certificate chain, and certificate revocation list.
 
 If 'dmz' is specified as a short name, the root domain name will be added as a valid name for the host, in addition to the subdomain 'dmz'.
 

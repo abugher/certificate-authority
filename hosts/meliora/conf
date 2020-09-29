@@ -70,3 +70,4 @@ emailAddress            = optional
 DNS.1                   = meliora.neuronpointer.net
 DNS.2                   = remote.neuronpointer.net
 DNS.3                   = printer.neuronpointer.net
+DNS.4                   = kanboard.neuronpointer.net
