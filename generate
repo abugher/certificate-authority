@@ -52,17 +52,6 @@ else
   inform "Directory exists:  ${ca_root_sensitive_dir}"
 fi
 
-if newer_than_deps "${ca_root_conf_template}" "${depend_on_ca_root_conf_template[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_root_conf_template[@]}"
-    ;;
-  esac
-fi
-
 if ! test -e "${ca_root_conf}"; then
   cp "${ca_root_conf_template}" "${ca_root_conf}" \
   || fail $ERR_CONF "Failed to create conf:  ${ca_root_conf}"
@@ -72,17 +61,6 @@ if ! test -e "${ca_root_conf}"; then
   inform "Injected domain name:  ${1}"
 else
   inform "Conf exists:  ${ca_root_conf}"
-fi
-
-if newer_than_deps "${ca_root_conf}" "${depend_on_ca_root_conf[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_root_conf[@]}"
-    ;;
-  esac
 fi
 
 if ! test -e "${ca_root_key}"; then
@@ -97,41 +75,21 @@ if ! test -e "${ca_root_key}"; then
   echo 1000 > "${ca_root_dir}/crlnumber" \
   || fail $ERR_GENRSA "Failed to create 'crlnumber'."
 
-  openssl genrsa -aes256 -out "${ca_root_key}" 4096 \
+  pass show "${ca_root_key_pass_path}" \
+    | openssl genrsa -passin stdin -aes256 -out "${ca_root_key}" 4096 \
   || fail $ERR_GENRSA "Failed to generate CA root key:  ${ca_root_key}"
   inform "Generated key:  ${ca_root_key}"
 else
   inform "Key exists:  ${ca_root_key}"
 fi
 
-if newer_than_deps "${ca_root_key}" "${depend_on_ca_root_key[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_root_key[@]}"
-    ;;
-  esac
-fi
-
 if ! test -e "${ca_root_cert}"; then
-  openssl req -config "${ca_root_conf}" -key "${ca_root_key}" -new -x509 -days $(( 365 * 10 )) -sha256 -extensions v3_ca -out "${ca_root_cert}" \
+  pass show "${ca_root_key_pass_path}" \
+    | openssl req -passin stdin -config "${ca_root_conf}" -key "${ca_root_key}" -new -x509 -days $(( 365 * 10 )) -sha256 -extensions v3_ca -out "${ca_root_cert}" \
   || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert}"
   inform "Generated certificate:  ${ca_root_cert}"
 else
   inform "Certificate exists:  ${ca_root_cert}"
-fi
-
-if newer_than_deps "${ca_root_cert}" "${depend_on_ca_root_cert[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_root_cert[@]}"
-    ;;
-  esac
 fi
 
 if ! test -e "${ca_root_cert_der}"; then
@@ -150,34 +108,12 @@ else
   inform "Revocation list exists:  ${ca_root_crl}"
 fi
 
-if newer_than_deps "${ca_root_crl}" "${depend_on_ca_root_crl[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_root_crl[@]}"
-    ;;
-  esac
-fi
-
 if ! test -e "${ca_root_crl_der}"; then
   openssl crl -in  "${ca_root_crl}" -outform der -out "${ca_root_crl_der}" \
   || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_root_crl_der}"
   inform "Generated DER encoded revocation list:  ${ca_root_crl_der}"
 else
   inform "DER encoded revocation list exists:  ${ca_root_crl_der}"
-fi
-
-if newer_than_deps "${ca_root_crl_der}" "${depend_on_ca_root_crl_der[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_root_crl_der[@]}"
-    ;;
-  esac
 fi
 
 
@@ -207,17 +143,6 @@ else
   inform "Directory exists:  ${ca_intermediate_sensitive_dir}"
 fi
 
-if newer_than_deps "${ca_intermediate_conf_template}" "${depend_on_ca_intermediate_conf_template[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_intermediate_conf_template[@]}"
-    ;;
-  esac
-fi
-
 if ! test -e "${ca_intermediate_conf}"; then
   cp "${ca_intermediate_conf_template}" "${ca_intermediate_conf}" \
   || fail $ERR_CONF "Failed to create conf:  ${ca_intermediate_conf}"
@@ -227,17 +152,6 @@ if ! test -e "${ca_intermediate_conf}"; then
   inform "Injected domain name:  ${1}"
 else
   inform "Conf exists:  ${ca_intermediate_conf}"
-fi
-
-if newer_than_deps "${ca_intermediate_conf}" "${depend_on_ca_intermediate_conf[@]}"; then
-  case "$(prompt "Fix timestamps on CA material?  [y/N]")" in
-  [yY]*)
-    touch_ca_material
-    ;;
-  *)
-    remove_stale "${depend_on_ca_intermediate_conf[@]}"
-    ;;
-  esac
 fi
 
 if ! test -e "${ca_intermediate_key}"; then
@@ -251,7 +165,8 @@ if ! test -e "${ca_intermediate_key}"; then
   || fail $ERR_GENRSA "Failed to remove stale 'serial.old'."
   echo 1000 > "${ca_intermediate_dir}/crlnumber" \
   || fail $ERR_GENRSA "Failed to create 'crlnumber'."
-  openssl genrsa -aes256 -out "${ca_intermediate_key}" 4096 \
+  pass show "${ca_intermediate_key_pass_path}" \
+    | openssl genrsa -passin stdin -aes256 -out "${ca_intermediate_key}" 4096 \
   || fail $ERR_GENRSA "Failed to generate CA intermediate key:  ${ca_intermediate_key}"
   inform "Generated key:  ${ca_intermediate_key}"
   remove_stale "${depend_on_ca_intermediate_key[@]}"
@@ -260,7 +175,8 @@ else
 fi
 
 if ! test -e "${ca_intermediate_csr}"; then
-  openssl req -config "${ca_intermediate_conf}" -new -sha256 -key "${ca_intermediate_key}" -out "${ca_intermediate_csr}" \
+  pass show "${ca_intermediate_key_pass_path}" \
+    | openssl req -passin stdin -config "${ca_intermediate_conf}" -new -sha256 -key "${ca_intermediate_key}" -out "${ca_intermediate_csr}" \
   || fail $ERR_CSR "Failed to generate CSR:  ${ca_intermediate_csr}"
   inform "Generated CSR:  ${ca_intermediate_csr}"
   remove_stale "${depend_on_ca_intermediate_csr[@]}"
@@ -323,10 +239,6 @@ if ! test 'yes' = "${ca_only}"; then
     inform "Directory exists:  ${sensitive_host_dir}"
   fi
 
-  if newer_than_deps "${host_conf_template}" "${depend_on_host_conf_template[@]}"; then
-    remove_stale "${depend_on_host_conf_template[@]}"
-  fi
-
   if ! test -e "${host_conf}"; then
     cp "${host_conf_template}" "${host_conf}" \
     || fail $ERR_CONF "Failed to create conf:  ${host_conf}"
@@ -363,12 +275,8 @@ if ! test 'yes' = "${ca_only}"; then
     inform "Conf exists:  ${host_conf}"
   fi
 
-  if newer_than_deps "${host_conf}" "${depend_on_host_conf[@]}"; then
-    remove_stale "${depend_on_host_conf[@]}"
-  fi
-
   if ! test -e "${host_key}"; then
-    openssl genrsa -out "${host_key}" 4096 \
+    openssl genrsa -passin stdin -out "${host_key}" 4096 \
     || fail $ERR_GENRSA "Failed to generate host key:  ${host_key}"
     inform "Generated host key:  ${host_key}"
     remove_stale "${depend_on_host_key[@]}"

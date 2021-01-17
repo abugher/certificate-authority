@@ -21,7 +21,7 @@ domain='neuronpointer.net'
 prefix="${0}:  "
 
 public=.
-sensitive=../../sensitive/control_center/certificate_authority
+sensitive=../sensitive_certificate_authority
 
 prereqs=(
   'ca_root_conf_template'
@@ -40,6 +40,7 @@ ca_root_sensitive_dir=${sensitive}/ca/root
 ca_root_conf_template=${public}/ca_root_conf_template
 ca_root_conf=${ca_root_dir}/conf
 ca_root_key=${ca_root_sensitive_dir}/key.pem
+ca_root_key_pass_path="${USER}/ca/root_passphrase"
 ca_root_cert=${ca_root_dir}/cert.pem
 ca_root_cert_der=${ca_root_dir}/cert.cer
 ca_root_crl=${ca_root_dir}/crl.pem
@@ -51,6 +52,7 @@ ca_intermediate_sensitive_dir=${sensitive}/ca/intermediate
 ca_intermediate_conf_template=${public}/ca_intermediate_conf_template
 ca_intermediate_conf=${ca_intermediate_dir}/conf
 ca_intermediate_key=${ca_intermediate_sensitive_dir}/key.pem
+ca_intermediate_key_pass_path="${USER}/ca/intermediate_passphrase"
 ca_intermediate_csr=${ca_intermediate_dir}/csr.pem
 ca_intermediate_cert=${ca_intermediate_dir}/cert.pem
 ca_intermediate_cert_der=${ca_intermediate_dir}/cert.cer
@@ -202,36 +204,4 @@ remove_stale() {
       inform "Removed stale file:  ${file}"
     fi
   done
-}
-
-
-newer_than_deps() {
-  true=0
-  false=1
-  args=(${@})
-  deps=("${args[@]:1}")
-  if test "" = "${deps[*]}"; then
-    return $false
-  fi
-  is_new=$false
-  for d in "${deps[@]}"; do
-    if test "${1}" -nt "${d}"; then
-      inform "'${1}' is newer than: '${d}'"
-      is_new=$true
-    fi
-  done
-  return $is_new
-}
-
-
-touch_ca_material() {
-  touch "${ca_root_dir}"/conf
-  touch "${ca_root_dir}"/cert.pem 
-  touch "${ca_root_dir}"/crl.pem 
-  touch "${ca_root_dir}"/crl.der
-  touch "${ca_intermediate_dir}"/conf
-  touch "${ca_intermediate_dir}"/csr.pem 
-  touch "${ca_intermediate_dir}"/cert.pem 
-  touch "${ca_intermediate_dir}"/crl.pem 
-  touch "${ca_intermediate_dir}"/crl.der
 }
