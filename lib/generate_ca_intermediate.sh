@@ -25,24 +25,7 @@ function generate_ca_intermediate() {
     debug "Directory exists:  ${ca_intermediate_sensitive_dir}"
   fi
 
-  if ! test -e "${ca_intermediate_conf}"; then
-    cp "${ca_intermediate_conf_template}" "${ca_intermediate_conf}" \
-      || fail $ERR_CONF "Failed to create conf:  ${ca_intermediate_conf}"
-
-    sed -i 's/DOMAIN/'${domain}'/' "${ca_intermediate_conf}" \
-      || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
-    debug "Injected domain name:  ${1}"
-    sed -i 's#CA_DIR#'${certificate_authority}'#' "${ca_intermediate_conf}" \
-      || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
-    debug "Injected certificate authority directory:  ${certificate_authority}"
-    sed -i 's#CA_SDIR#'${sensitive}'#' "${ca_intermediate_conf}" \
-      || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
-    debug "Injected certificate sensitive authority directory:  ${sensitive}"
-    inform "Generated conf:  ${ca_intermediate_conf}"
-    remove_stale "${depend_on_ca_intermediate_conf[@]}"
-  else
-    debug "Conf exists:  ${ca_intermediate_conf}"
-  fi
+  generate_conf "${ca_intermediate_conf}" "${ca_intermediate_conf_template}"
 
   if ! test -e "${ca_intermediate_key}"; then
     rm -f "${ca_intermediate_dir}/index.txt"{,.attr} \

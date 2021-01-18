@@ -11,7 +11,7 @@ fail() {
 
 
 inform() {
-  printf "%s\n" "${prefix}:  ${1}"
+  printf "%s\n" "${prefix}${1}"
 }
 
 

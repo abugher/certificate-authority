@@ -32,23 +32,7 @@ function generate_ca_root() {
     debug "Directory exists:  ${ca_root_sensitive_dir}"
   fi
 
-  if ! test -e "${ca_root_conf}"; then
-    cp "${ca_root_conf_template}" "${ca_root_conf}" \
-      || fail $ERR_CONF "Failed to create conf:  ${ca_root_conf}"
-    sed -i 's/DOMAIN/'${domain}'/' "${ca_root_conf}" \
-      || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
-    debug "Injected domain name:  ${1}"
-    sed -i 's#CA_DIR#'${certificate_authority}'#' "${ca_root_conf}" \
-      || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
-    debug "Injected certificate authority directory:  ${certificate_authority}"
-    sed -i 's#CA_SDIR#'${sensitive}'#' "${ca_root_conf}" \
-      || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
-    debug "Injected certificate sensitive authority directory:  ${sensitive}"
-    inform "Generated conf:  ${ca_root_conf}"
-    remove_stale "${depend_on_ca_root_conf[@]}"
-  else
-    debug "Conf exists:  ${ca_root_conf}"
-  fi
+  generate_conf "${ca_root_conf}" "${ca_root_conf_template}"
 
   if ! test -e "${ca_root_key}"; then
     rm -f "${ca_root_dir}/index.txt"{,.attr} \

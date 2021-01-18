@@ -9,6 +9,7 @@ cd "${OLDPWD}"
 # Load libraries.
 libs=(
   'generate_sanity'
+  'generate_conf'
   'generate_ca_root'
   'generate_ca_intermediate'
   'generate_host'
@@ -21,4 +22,6 @@ fi
 generate_sanity
 generate_ca_root
 generate_ca_intermediate
-generate_host
+if test 'no' = "${ca_only}"; then
+  generate_host "${@}"
+fi
