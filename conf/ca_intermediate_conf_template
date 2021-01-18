@@ -60,7 +60,7 @@ extendedKeyUsage        = serverAuth
 [ v3_req ]
 basicConstraints        = CA:FALSE
 keyUsage                = nonRepudiation, digitalSignature, keyEncipherment
-crlDistributionPoints   = URI:http://ca.DOMAIN/intermediate.crl.der
+crlDistributionPoints   = URI:http://ca.DOMAIN/root.crl.der
 
 [ v3_ca ]
 subjectKeyIdentifier    = hash

@@ -26,7 +26,7 @@ extendedKeyUsage        = serverAuth
 basicConstraints        = CA:FALSE
 keyUsage                = nonRepudiation, digitalSignature, keyEncipherment
 subjectAltName          = @alt_names
-crlDistributionPoints   = URI:http://ca.DOMAIN/COMMON_NAME.crl.der
+crlDistributionPoints   = URI:http://ca.DOMAIN/intermediate.crl.der
 
 [ crl_ext ]
 authorityKeyIdentifier  = keyid:always
