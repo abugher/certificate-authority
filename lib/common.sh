@@ -1,10 +1,17 @@
 #!/bin/bash
 
-for lib in output remove_stale errors vars dependencies; do
+libs+=(
+  'output'
+  'remove_stale'
+  'errors'
+  'vars'
+  'dependencies'
+)
+
+for lib in "${libs[@]}"; do
   lib_path="${certificate_authority}/lib/${lib}.sh"
-  if ! test -e "${lib_path}"; then
-    echo "Missing library:  ${lib_path}"
+  if ! . "${lib_path}"; then
+    echo "Failed to load library:  ${lib_path}" >&2
     exit 1
   fi
-  . "${lib_path}"
 done
