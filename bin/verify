@@ -26,7 +26,7 @@ done
 # verify
 openssl verify \
   -crl_check_all \
-  -CAfile "${ca_root_cert}" -CRLfile "${ca_root_crl}" \
+  -trusted "${ca_root_cert}" -CRLfile "${ca_root_crl}" \
   -untrusted "${ca_intermediate_cert}" -CRLfile "${ca_intermediate_crl}" \
   -CRLfile "${host_crl}" \
   "${host_cert}" \
