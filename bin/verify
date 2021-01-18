@@ -2,10 +2,17 @@
 # verify - Verify an SSL certificate, specified by a short hostname.
 # verify <shorthostname>
 
+# Find self.
 OLDPWD="${PWD}"
 cd "${0%/*}/.."
 certificate_authority="${PWD}"
 cd "${OLDPWD}"
+
+#Load libraries.
+libs=(
+  'verify_validity'
+  'verify_cert_matches_key'
+)
 if ! . "${certificate_authority}/lib/common.sh"; then
   echo "Failed to load common dependencies." >&2
   exit 1
@@ -24,11 +31,5 @@ for prereq in "${verify_prereqs}"; do
 done
 
 # verify
-openssl verify \
-  -crl_check_all \
-  -trusted "${ca_root_cert}" -CRLfile "${ca_root_crl}" \
-  -untrusted "${ca_intermediate_cert}" -CRLfile "${ca_intermediate_crl}" \
-  -CRLfile "${host_crl}" \
-  "${host_cert}" \
-  || fail $ERR_CERT "Failed to verify certificate:  ${host_cert}"
-inform "Verified certificate:  ${host_cert}"
+verify_validity
+verify_cert_matches_key
