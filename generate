@@ -30,7 +30,7 @@ done
 
 if ! test -e "${ca_root_dir}"; then
   mkdir -p "${ca_root_dir}" \
-  || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_dir}"
+    || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_dir}"
   inform "Created directory:  ${ca_root_dir}"
 else
   inform "Directory exists:  ${ca_root_dir}"
@@ -38,7 +38,7 @@ fi
 
 if ! test -e "${ca_root_newcerts}"; then
   mkdir -p "${ca_root_newcerts}" \
-  || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_newcerts}"
+    || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_newcerts}"
   inform "Created directory:  ${ca_root_newcerts}"
 else
   inform "Directory exists:  ${ca_root_newcerts}"
@@ -46,7 +46,7 @@ fi
 
 if ! test -e "${ca_root_sensitive_dir}"; then
   mkdir -p "${ca_root_sensitive_dir}" \
-  || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_sensitive_dir}"
+    || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_sensitive_dir}"
   inform "Created directory:  ${ca_root_sensitive_dir}"
 else
   inform "Directory exists:  ${ca_root_sensitive_dir}"
@@ -54,10 +54,10 @@ fi
 
 if ! test -e "${ca_root_conf}"; then
   cp "${ca_root_conf_template}" "${ca_root_conf}" \
-  || fail $ERR_CONF "Failed to create conf:  ${ca_root_conf}"
+    || fail $ERR_CONF "Failed to create conf:  ${ca_root_conf}"
 
   sed -i 's/DOMAIN/'${domain}'/' "${ca_root_conf}" \
-  || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
+    || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
   inform "Injected domain name:  ${1}"
 else
   inform "Conf exists:  ${ca_root_conf}"
@@ -65,28 +65,28 @@ fi
 
 if ! test -e "${ca_root_key}"; then
   rm -f "${ca_root_dir}/index.txt"{,.attr} \
-  || fail $ERR_GENRSA "Failed to remove stale index files."
+    || fail $ERR_GENRSA "Failed to remove stale index files."
   touch "${ca_root_dir}/index.txt"{,.attr} \
-  || fail $ERR_GENRSA "Failed to create index files."
+    || fail $ERR_GENRSA "Failed to create index files."
   echo 1000 > "${ca_root_dir}/serial" \
-  || fail $ERR_GENRSA "Failed to create 'serial'."
+    || fail $ERR_GENRSA "Failed to create 'serial'."
   rm -f "${ca_root_dir}/serial.old" \
-  || fail $ERR_GENRSA "Failed to remove stale 'serial.old'."
+    || fail $ERR_GENRSA "Failed to remove stale 'serial.old'."
   echo 1000 > "${ca_root_dir}/crlnumber" \
-  || fail $ERR_GENRSA "Failed to create 'crlnumber'."
+    || fail $ERR_GENRSA "Failed to create 'crlnumber'."
 
-  pass show "${ca_root_key_pass_path}" \
-    | openssl genrsa -passin stdin -aes256 -out "${ca_root_key}" 4096 \
-  || fail $ERR_GENRSA "Failed to generate CA root key:  ${ca_root_key}"
+  { pass show "${ca_root_key_pass_path}"; yes; } \
+    | openssl genrsa -passout stdin -aes256 -out "${ca_root_key}" 4096 \
+    || fail $ERR_GENRSA "Failed to generate CA root key:  ${ca_root_key}"
   inform "Generated key:  ${ca_root_key}"
 else
   inform "Key exists:  ${ca_root_key}"
 fi
 
 if ! test -e "${ca_root_cert}"; then
-  pass show "${ca_root_key_pass_path}" \
+  { pass show "${ca_root_key_pass_path}"; yes; } \
     | openssl req -passin stdin -config "${ca_root_conf}" -key "${ca_root_key}" -new -x509 -days $(( 365 * 10 )) -sha256 -extensions v3_ca -out "${ca_root_cert}" \
-  || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert}"
+    || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert}"
   inform "Generated certificate:  ${ca_root_cert}"
 else
   inform "Certificate exists:  ${ca_root_cert}"
@@ -94,23 +94,24 @@ fi
 
 if ! test -e "${ca_root_cert_der}"; then
   openssl x509 -outform der -in $ca_root_cert -out $ca_root_cert_der \
-  || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert_der}"
+    || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert_der}"
   inform "Generated certificate:  ${ca_root_cert_der}"
 else
   inform "Certificate exists:  ${ca_root_cert_der}"
 fi
 
 if ! test -e "${ca_root_crl}"; then
-  openssl ca -config "${ca_root_conf}" -gencrl -out "${ca_root_crl}" \
-  || fail $ERR_CERT "Failed to generate revocation list:  ${ca_root_crl}"
+  { pass show "${ca_root_key_pass_path}"; yes; } \
+    | openssl ca -passin stdin -config "${ca_root_conf}" -gencrl -out "${ca_root_crl}" \
+    || fail $ERR_CERT "Failed to generate revocation list:  ${ca_root_crl}"
   inform "Generated revocation list:  ${ca_root_crl}"
 else
   inform "Revocation list exists:  ${ca_root_crl}"
 fi
 
 if ! test -e "${ca_root_crl_der}"; then
-  openssl crl -in  "${ca_root_crl}" -outform der -out "${ca_root_crl_der}" \
-  || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_root_crl_der}"
+  yes | openssl crl -in  "${ca_root_crl}" -outform der -out "${ca_root_crl_der}" \
+    || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_root_crl_der}"
   inform "Generated DER encoded revocation list:  ${ca_root_crl_der}"
 else
   inform "DER encoded revocation list exists:  ${ca_root_crl_der}"
@@ -121,7 +122,7 @@ fi
 
 if ! test -e "${ca_intermediate_dir}"; then
   mkdir -p "${ca_intermediate_dir}" \
-  || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_dir}"
+    || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_dir}"
   inform "Created directory:  ${ca_intermediate_dir}"
 else
   inform "Directory exists:  ${ca_intermediate_dir}"
@@ -129,7 +130,7 @@ fi
 
 if ! test -e "${ca_intermediate_newcerts}"; then
   mkdir -p "${ca_intermediate_newcerts}" \
-  || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_newcerts}"
+    || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_newcerts}"
   inform "Created directory:  ${ca_intermediate_newcerts}"
 else
   inform "Directory exists:  ${ca_intermediate_newcerts}"
@@ -137,7 +138,7 @@ fi
 
 if ! test -e "${ca_intermediate_sensitive_dir}"; then
   mkdir -p "${ca_intermediate_sensitive_dir}" \
-  || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_sensitive_dir}"
+    || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_sensitive_dir}"
   inform "Created directory:  ${ca_intermediate_sensitive_dir}"
 else
   inform "Directory exists:  ${ca_intermediate_sensitive_dir}"
@@ -145,10 +146,10 @@ fi
 
 if ! test -e "${ca_intermediate_conf}"; then
   cp "${ca_intermediate_conf_template}" "${ca_intermediate_conf}" \
-  || fail $ERR_CONF "Failed to create conf:  ${ca_intermediate_conf}"
+    || fail $ERR_CONF "Failed to create conf:  ${ca_intermediate_conf}"
 
   sed -i 's/DOMAIN/'${domain}'/' "${ca_intermediate_conf}" \
-  || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
+    || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
   inform "Injected domain name:  ${1}"
 else
   inform "Conf exists:  ${ca_intermediate_conf}"
@@ -156,18 +157,18 @@ fi
 
 if ! test -e "${ca_intermediate_key}"; then
   rm -f "${ca_intermediate_dir}/index.txt"{,.attr} \
-  || fail $ERR_GENRSA "Failed to remove stale index files."
+    || fail $ERR_GENRSA "Failed to remove stale index files."
   touch "${ca_intermediate_dir}/index.txt"{,.attr} \
-  || fail $ERR_GENRSA "Failed to create index files."
+    || fail $ERR_GENRSA "Failed to create index files."
   echo 1000 > "${ca_intermediate_dir}/serial" \
-  || fail $ERR_GENRSA "Failed to create 'serial'."
+    || fail $ERR_GENRSA "Failed to create 'serial'."
   rm -f "${ca_intermediate_dir}/serial.old" \
-  || fail $ERR_GENRSA "Failed to remove stale 'serial.old'."
+    || fail $ERR_GENRSA "Failed to remove stale 'serial.old'."
   echo 1000 > "${ca_intermediate_dir}/crlnumber" \
-  || fail $ERR_GENRSA "Failed to create 'crlnumber'."
-  pass show "${ca_intermediate_key_pass_path}" \
-    | openssl genrsa -passin stdin -aes256 -out "${ca_intermediate_key}" 4096 \
-  || fail $ERR_GENRSA "Failed to generate CA intermediate key:  ${ca_intermediate_key}"
+    || fail $ERR_GENRSA "Failed to create 'crlnumber'."
+  { pass show "${ca_intermediate_key_pass_path}"; yes; } \
+    | openssl genrsa -passout stdin -aes256 -out "${ca_intermediate_key}" 4096 \
+    || fail $ERR_GENRSA "Failed to generate CA intermediate key:  ${ca_intermediate_key}"
   inform "Generated key:  ${ca_intermediate_key}"
   remove_stale "${depend_on_ca_intermediate_key[@]}"
 else
@@ -175,9 +176,9 @@ else
 fi
 
 if ! test -e "${ca_intermediate_csr}"; then
-  pass show "${ca_intermediate_key_pass_path}" \
+  { pass show "${ca_intermediate_key_pass_path}"; yes; } \
     | openssl req -passin stdin -config "${ca_intermediate_conf}" -new -sha256 -key "${ca_intermediate_key}" -out "${ca_intermediate_csr}" \
-  || fail $ERR_CSR "Failed to generate CSR:  ${ca_intermediate_csr}"
+    || fail $ERR_CSR "Failed to generate CSR:  ${ca_intermediate_csr}"
   inform "Generated CSR:  ${ca_intermediate_csr}"
   remove_stale "${depend_on_ca_intermediate_csr[@]}"
 else
@@ -185,8 +186,9 @@ else
 fi
 
 if ! test -e "${ca_intermediate_cert}"; then
-  openssl ca -config "${ca_root_conf}" -extensions v3_intermediate_ca -days $(( 365 * 10 )) -notext -md sha256 -in "${ca_intermediate_csr}" -out "${ca_intermediate_cert}" \
-  || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert}"
+  { pass show "${ca_root_key_pass_path}"; yes; } \
+    | openssl ca -passin stdin -config "${ca_root_conf}" -extensions v3_intermediate_ca -days $(( 365 * 10 )) -notext -md sha256 -in "${ca_intermediate_csr}" -out "${ca_intermediate_cert}" \
+    || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert}"
   inform "Generated certificate:  ${ca_intermediate_cert}"
   remove_stale "${depend_on_ca_intermediate_cert[@]}"
 else
@@ -194,16 +196,17 @@ else
 fi
 
 if ! test -e "${ca_intermediate_cert_der}"; then
-  openssl x509 -outform der -in $ca_intermediate_cert -out $ca_intermediate_cert_der \
-  || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert_der}"
+  yes | openssl x509 -outform der -in $ca_intermediate_cert -out $ca_intermediate_cert_der \
+    || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert_der}"
   inform "Generated certificate:  ${ca_intermediate_cert_der}"
 else
   inform "Certificate exists:  ${ca_intermediate_cert_der}"
 fi
 
 if ! test -e "${ca_intermediate_crl}"; then
-  openssl ca -config "${ca_intermediate_conf}" -gencrl -out "${ca_intermediate_crl}" \
-  || fail $ERR_CERT "Failed to generate revocation list:  ${ca_intermediate_crl}"
+  { pass show "${ca_intermediate_key_pass_path}"; yes; } \
+    | openssl ca -passin stdin -config "${ca_intermediate_conf}" -gencrl -out "${ca_intermediate_crl}" \
+    || fail $ERR_CERT "Failed to generate revocation list:  ${ca_intermediate_crl}"
   inform "Generated revocation list:  ${ca_intermediate_crl}"
   remove_stale "${depend_on_ca_intermediate_crl[@]}"
 else
@@ -211,8 +214,8 @@ else
 fi
 
 if ! test -e "${ca_intermediate_crl_der}"; then
-  openssl crl -in  "${ca_intermediate_crl}" -outform der -out "${ca_intermediate_crl_der}" \
-  || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_intermediate_crl_der}"
+  yes | openssl crl -in  "${ca_intermediate_crl}" -outform der -out "${ca_intermediate_crl_der}" \
+    || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_intermediate_crl_der}"
   inform "Generated DER encoded revocation list:  ${ca_intermediate_crl_der}"
   remove_stale "${depend_on_ca_intermediate_crl_der[@]}"
 else
@@ -225,7 +228,7 @@ fi
 if ! test 'yes' = "${ca_only}"; then
   if ! test -e "${host_dir}"; then
     mkdir -p "${host_dir}" \
-    || fail $ERR_MKDIR "Failed to create directory:  ${host_dir}"
+      || fail $ERR_MKDIR "Failed to create directory:  ${host_dir}"
     inform "Created directory:  ${host_dir}"
   else
     inform "Directory exists:  ${host_dir}"
@@ -233,7 +236,7 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${sensitive_host_dir}"; then
     mkdir -p "${sensitive_host_dir}" \
-    || fail $ERR_MKDIR "Failed to create directory:  ${sensitive_host_dir}"
+      || fail $ERR_MKDIR "Failed to create directory:  ${sensitive_host_dir}"
     inform "Created directory:  ${sensitive_host_dir}"
   else
     inform "Directory exists:  ${sensitive_host_dir}"
@@ -241,14 +244,14 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${host_conf}"; then
     cp "${host_conf_template}" "${host_conf}" \
-    || fail $ERR_CONF "Failed to create conf:  ${host_conf}"
+      || fail $ERR_CONF "Failed to create conf:  ${host_conf}"
 
     sed -i 's/DOMAIN/'${domain}'/' "${host_conf}" \
-    || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
+      || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
     inform "Injected domain name:  ${1}"
 
     sed -i 's/COMMONNAME/'${1}'/' "${host_conf}" \
-    || fail $ERR_CONF "Failed to inject common name:  ${1}"
+      || fail $ERR_CONF "Failed to inject common name:  ${1}"
     inform "Injected common name:  ${1}"
 
     n=1
@@ -257,14 +260,14 @@ if ! test 'yes' = "${ca_only}"; then
         fail $ERR_CONF "No dots in short names."
       fi
       echo -e "DNS.${n}                   = ${shortname}.${domain}" \
-      >> "${host_conf}" \
-      || fail $ERR_CONF "Failed to append configuration for short name:  ${shortname}"
+        >> "${host_conf}" \
+        || fail $ERR_CONF "Failed to append configuration for short name:  ${shortname}"
       inform "Appended short name:  ${shortname}"
       let n++
       if echo "${shortname}" | grep -q '^dmz$'; then
         echo -e "DNS.${n}                   = ${domain}" \
-        >> "${host_conf}" \
-        || fail $ERR_CONF "Failed to append configuration for root domain name:  ${domain}"
+          >> "${host_conf}" \
+          || fail $ERR_CONF "Failed to append configuration for root domain name:  ${domain}"
         inform "Appended root domain name:  ${domain}"
         let n++
       fi
@@ -276,8 +279,8 @@ if ! test 'yes' = "${ca_only}"; then
   fi
 
   if ! test -e "${host_key}"; then
-    openssl genrsa -passin stdin -out "${host_key}" 4096 \
-    || fail $ERR_GENRSA "Failed to generate host key:  ${host_key}"
+      openssl genrsa -out "${host_key}" 4096 \
+      || fail $ERR_GENRSA "Failed to generate host key:  ${host_key}"
     inform "Generated host key:  ${host_key}"
     remove_stale "${depend_on_host_key[@]}"
   else
@@ -286,7 +289,7 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${host_csr}"; then
     openssl req -config "${host_conf}" -key "${host_key}" -new -sha256 -out "${host_csr}" \
-    || fail $ERR_CSR "Failed to generate CSR:  ${host_csr}"
+      || fail $ERR_CSR "Failed to generate CSR:  ${host_csr}"
     inform "Generated CSR:  ${host_csr}"
     remove_stale "${depend_on_host_csr[@]}"
   else
@@ -294,8 +297,9 @@ if ! test 'yes' = "${ca_only}"; then
   fi
 
   if ! test -e "${host_cert}"; then
-    openssl ca -config "${host_conf}" -extensions v3_req -days $(( 365 * 10 )) -notext -md sha256 -in "${host_csr}" -out "${host_cert}" \
-    || fail $ERR_CERT "Failed to generate certificate:  ${host_cert}"
+    { pass show "${ca_intermediate_key_pass_path}"; yes; } \
+      | openssl ca --passin stdin -config "${host_conf}" -extensions v3_req -days $(( 365 * 10 )) -notext -md sha256 -in "${host_csr}" -out "${host_cert}" \
+      || fail $ERR_CERT "Failed to generate certificate:  ${host_cert}"
     inform "Generated certificate:  ${host_cert}"
     remove_stale "${depend_on_host_cert[@]}"
   else
@@ -304,7 +308,7 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${cert_chain}"; then
     cat "${host_cert}" "${ca_intermediate_cert}" "${ca_root_cert}" > "${cert_chain}" \
-    || fail $ERR_CHAIN "Failed to create certificate chain:  ${cert_chain}"
+      || fail $ERR_CHAIN "Failed to create certificate chain:  ${cert_chain}"
     inform "Created certificate chain:  ${cert_chain}"
     remove_stale "${depend_on_cert_chain[@]}"
   else
@@ -312,8 +316,9 @@ if ! test 'yes' = "${ca_only}"; then
   fi
 
   if ! test -e "${host_crl}"; then
-    openssl ca -config "${host_conf}" -gencrl -out "${host_crl}" \
-    || fail $ERR_CERT "Failed to generate revocation list:  ${host_crl}"
+    { pass show "${ca_intermediate_key_pass_path}"; yes; } \
+      | openssl ca -passin stdin -config "${host_conf}" -gencrl -out "${host_crl}" \
+      || fail $ERR_CERT "Failed to generate revocation list:  ${host_crl}"
     inform "Generated revocation list:  ${host_crl}"
     remove_stale "${depend_on_host_crl[@]}"
   else
@@ -322,7 +327,7 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${host_crl_der}"; then
     openssl crl -in  "${host_crl}" -outform der -out "${host_crl_der}" \
-    || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_host_crl_der}"
+      || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_host_crl_der}"
     inform "Generated DER encoded revocation list:  ${host_crl_der}"
     remove_stale "${depend_on_host_crl_der[@]}"
   else
