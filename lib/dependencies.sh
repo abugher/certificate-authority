@@ -94,6 +94,9 @@ depend_on_ca_intermediate_crl=(
 depend_on_ca_intermediate_crl_der=(
 )
 if test 'no' == "${ca_only}"; then
+  depend_on_ca_intermediate_cert+=(
+    $host_csr
+  )
   depend_on_host_conf_template=(
     $host_conf
   )

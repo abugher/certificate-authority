@@ -59,10 +59,17 @@ fi
 if ! test -e "${ca_root_conf}"; then
   cp "${ca_root_conf_template}" "${ca_root_conf}" \
     || fail $ERR_CONF "Failed to create conf:  ${ca_root_conf}"
-
   sed -i 's/DOMAIN/'${domain}'/' "${ca_root_conf}" \
     || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
   inform "Injected domain name:  ${1}"
+  sed -i 's#CA_DIR#'${certificate_authority}'#' "${ca_root_conf}" \
+    || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
+  inform "Injected certificate authority directory:  ${certificate_authority}"
+  sed -i 's#CA_SDIR#'${sensitive}'#' "${ca_root_conf}" \
+    || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
+  inform "Injected certificate sensitive authority directory:  ${sensitive}"
+  inform "Generated conf:  ${ca_root_conf}"
+  remove_stale "${depend_on_ca_root_conf[@]}"
 else
   inform "Conf exists:  ${ca_root_conf}"
 fi
@@ -83,6 +90,7 @@ if ! test -e "${ca_root_key}"; then
     | openssl genrsa -passout stdin -aes256 -out "${ca_root_key}" 4096 \
     || fail $ERR_GENRSA "Failed to generate CA root key:  ${ca_root_key}"
   inform "Generated key:  ${ca_root_key}"
+  remove_stale "${depend_on_ca_root_key[@]}"
 else
   inform "Key exists:  ${ca_root_key}"
 fi
@@ -92,6 +100,7 @@ if ! test -e "${ca_root_cert}"; then
     | openssl req -passin stdin -config "${ca_root_conf}" -key "${ca_root_key}" -new -x509 -days $(( 365 * 10 )) -sha256 -extensions v3_ca -out "${ca_root_cert}" \
     || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert}"
   inform "Generated certificate:  ${ca_root_cert}"
+  remove_stale "${depend_on_ca_root_cert[@]}"
 else
   inform "Certificate exists:  ${ca_root_cert}"
 fi
@@ -109,6 +118,7 @@ if ! test -e "${ca_root_crl}"; then
     | openssl ca -passin stdin -config "${ca_root_conf}" -gencrl -crldays "${crldays}" -out "${ca_root_crl}" \
     || fail $ERR_CERT "Failed to generate revocation list:  ${ca_root_crl}"
   inform "Generated revocation list:  ${ca_root_crl}"
+  remove_stale "${depend_on_ca_root_crl[@]}"
 else
   inform "Revocation list exists:  ${ca_root_crl}"
 fi
@@ -117,6 +127,7 @@ if ! test -e "${ca_root_crl_der}"; then
   yes | openssl crl -in  "${ca_root_crl}" -outform der -out "${ca_root_crl_der}" \
     || fail $ERR_CERT "Failed to generate DER encoded revocation list:  ${ca_root_crl_der}"
   inform "Generated DER encoded revocation list:  ${ca_root_crl_der}"
+  remove_stale "${depend_on_ca_root_crl_der[@]}"
 else
   inform "DER encoded revocation list exists:  ${ca_root_crl_der}"
 fi
@@ -154,6 +165,14 @@ if ! test -e "${ca_intermediate_conf}"; then
   sed -i 's/DOMAIN/'${domain}'/' "${ca_intermediate_conf}" \
     || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
   inform "Injected domain name:  ${1}"
+  sed -i 's#CA_DIR#'${certificate_authority}'#' "${ca_intermediate_conf}" \
+    || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
+  inform "Injected certificate authority directory:  ${certificate_authority}"
+  sed -i 's#CA_SDIR#'${sensitive}'#' "${ca_intermediate_conf}" \
+    || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
+  inform "Injected certificate sensitive authority directory:  ${sensitive}"
+  inform "Generated conf:  ${ca_intermediate_conf}"
+  remove_stale "${depend_on_ca_intermediate_conf[@]}"
 else
   inform "Conf exists:  ${ca_intermediate_conf}"
 fi
@@ -252,9 +271,17 @@ if ! test 'yes' = "${ca_only}"; then
       || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
     inform "Injected domain name:  ${1}"
 
-    sed -i 's/COMMONNAME/'${1}'/' "${host_conf}" \
+    sed -i 's/COMMON_NAME/'${1}'/' "${host_conf}" \
       || fail $ERR_CONF "Failed to inject common name:  ${1}"
     inform "Injected common name:  ${1}"
+
+    sed -i 's#CA_DIR#'${certificate_authority}'#' "${host_conf}" \
+      || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
+    inform "Injected certificate authority directory:  ${certificate_authority}"
+
+    sed -i 's#CA_SDIR#'${sensitive}'#' "${host_conf}" \
+      || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
+    inform "Injected certificate sensitive authority directory:  ${sensitive}"
 
     n=1
     for shortname in "${@}"; do
@@ -274,7 +301,7 @@ if ! test 'yes' = "${ca_only}"; then
         let n++
       fi
     done
-    inform "Created conf:  ${host_conf}"
+    inform "Generated conf:  ${host_conf}"
     remove_stale "${depend_on_host_conf[@]}"
   else
     inform "Conf exists:  ${host_conf}"
@@ -300,7 +327,7 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${host_cert}"; then
     { pass show "${ca_intermediate_key_pass_path}"; yes; } \
-      | openssl ca --passin stdin -config "${host_conf}" -extensions v3_req -days $(( 365 * 10 )) -notext -md sha256 -in "${host_csr}" -out "${host_cert}" \
+      | openssl ca --passin stdin -config "${ca_intermediate_conf}" -extensions v3_req -days $(( 365 * 10 )) -notext -md sha256 -in "${host_csr}" -out "${host_cert}" \
       || fail $ERR_CERT "Failed to generate certificate:  ${host_cert}"
     inform "Generated certificate:  ${host_cert}"
     remove_stale "${depend_on_host_cert[@]}"

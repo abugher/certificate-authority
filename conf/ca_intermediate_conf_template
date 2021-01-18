@@ -5,8 +5,8 @@ RANDFILE                = $ENV::HOME/.rnd
 default_ca	        = CA_default
 
 [ CA_default ]
-dir                     = /home/aaron/control_center/certificate_authority/ca/intermediate
-sdir                    = /home/aaron/control_center/sensitive_certificate_authority/ca/intermediate
+dir                     = CA_DIR/ca/intermediate
+sdir                    = CA_SDIR/ca/intermediate
 database                = $dir/index.txt
 new_certs_dir           = $dir/newcerts
 certificate             = $dir/cert.pem
@@ -60,7 +60,7 @@ extendedKeyUsage        = serverAuth
 [ v3_req ]
 basicConstraints        = CA:FALSE
 keyUsage                = nonRepudiation, digitalSignature, keyEncipherment
-crlDistributionPoints   = URI:http://ca.DOMAIN/root.crl.der
+crlDistributionPoints   = URI:http://ca.DOMAIN/intermediate.crl.der
 
 [ v3_ca ]
 subjectKeyIdentifier    = hash
