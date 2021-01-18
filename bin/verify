@@ -10,6 +10,7 @@ cd "${OLDPWD}"
 
 #Load libraries.
 libs=(
+  'verify_sanity'
   'verify_validity'
   'verify_cert_matches_key'
 )
@@ -18,18 +19,19 @@ if ! . "${certificate_authority}/lib/common.sh"; then
   exit 1
 fi
 
-if test "${#}" -ne 1; then
-  fail $ERR_USAGE "Specify one short hostname."
+verify_sanity "${@}"
+
+verify_validity "${ca_root_cert}" "${ca_root_crl}"
+verify_validity "${ca_intermediate_cert}" "${ca_intermediate_crl}"
+
+if test 'yes' = "${ca_only}"; then
+  pass show "${ca_root_key_pass_path}" \
+    | verify_cert_matches_key "${ca_root_cert}" "${ca_root_key}"
+  pass show "${ca_intermediate_key_pass_path}" \
+    | verify_cert_matches_key "${ca_intermediate_cert}" "${ca_intermediate_key}"
 fi
 
-
-# sanity check
-for prereq in "${verify_prereqs}"; do
-  if ! test -e "${prereq}"; then
-    fail $ERR_PREREQ "Required file does not exist:  ${prereq}"
-  fi
-done
-
-# verify
-verify_validity
-verify_cert_matches_key
+if test 'no' = "${ca_only}"; then
+  verify_validity "${host_cert}" "${host_crl}"
+  verify_cert_matches_key "${host_cert}" "${host_key}" <<< ''
+fi
