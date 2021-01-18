@@ -10,4 +10,6 @@ function generate_sanity() {
       fail $ERR_PREREQ "Required file does not exist:  ${prereq}"
     fi
   done
+
+  debug "Sanity checks passed."
 }

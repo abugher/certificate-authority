@@ -7,7 +7,7 @@ function generate_ca_root() {
       || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_dir}"
     inform "Created directory:  ${ca_root_dir}"
   else
-    inform "Directory exists:  ${ca_root_dir}"
+    debug "Directory exists:  ${ca_root_dir}"
   fi
 
   if ! test -e "${ca_root_newcerts}"; then
@@ -15,13 +15,13 @@ function generate_ca_root() {
       || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_newcerts}"
     inform "Created directory:  ${ca_root_newcerts}"
   else
-    inform "Directory exists:  ${ca_root_newcerts}"
+    debug "Directory exists:  ${ca_root_newcerts}"
   fi
 
   if ! test -e "${sensitive}"; then
     fail $ERR_PREREQ "Failed to find sensitive directory:  ${sensitive}"
   else
-    inform "Directory exists:  ${sensitive}"
+    debug "Directory exists:  ${sensitive}"
   fi
 
   if ! test -e "${ca_root_sensitive_dir}"; then
@@ -29,7 +29,7 @@ function generate_ca_root() {
       || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_sensitive_dir}"
     inform "Created directory:  ${ca_root_sensitive_dir}"
   else
-    inform "Directory exists:  ${ca_root_sensitive_dir}"
+    debug "Directory exists:  ${ca_root_sensitive_dir}"
   fi
 
   if ! test -e "${ca_root_conf}"; then
@@ -37,17 +37,17 @@ function generate_ca_root() {
       || fail $ERR_CONF "Failed to create conf:  ${ca_root_conf}"
     sed -i 's/DOMAIN/'${domain}'/' "${ca_root_conf}" \
       || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
-    inform "Injected domain name:  ${1}"
+    debug "Injected domain name:  ${1}"
     sed -i 's#CA_DIR#'${certificate_authority}'#' "${ca_root_conf}" \
       || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
-    inform "Injected certificate authority directory:  ${certificate_authority}"
+    debug "Injected certificate authority directory:  ${certificate_authority}"
     sed -i 's#CA_SDIR#'${sensitive}'#' "${ca_root_conf}" \
       || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
-    inform "Injected certificate sensitive authority directory:  ${sensitive}"
+    debug "Injected certificate sensitive authority directory:  ${sensitive}"
     inform "Generated conf:  ${ca_root_conf}"
     remove_stale "${depend_on_ca_root_conf[@]}"
   else
-    inform "Conf exists:  ${ca_root_conf}"
+    debug "Conf exists:  ${ca_root_conf}"
   fi
 
   if ! test -e "${ca_root_key}"; then
@@ -68,7 +68,7 @@ function generate_ca_root() {
     inform "Generated key:  ${ca_root_key}"
     remove_stale "${depend_on_ca_root_key[@]}"
   else
-    inform "Key exists:  ${ca_root_key}"
+    debug "Key exists:  ${ca_root_key}"
   fi
 
   if ! test -e "${ca_root_cert}"; then
@@ -78,7 +78,7 @@ function generate_ca_root() {
     inform "Generated certificate:  ${ca_root_cert}"
     remove_stale "${depend_on_ca_root_cert[@]}"
   else
-    inform "Certificate exists:  ${ca_root_cert}"
+    debug "Certificate exists:  ${ca_root_cert}"
   fi
 
   if ! test -e "${ca_root_cert_der}"; then
@@ -86,7 +86,7 @@ function generate_ca_root() {
       || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert_der}"
     inform "Generated certificate:  ${ca_root_cert_der}"
   else
-    inform "Certificate exists:  ${ca_root_cert_der}"
+    debug "Certificate exists:  ${ca_root_cert_der}"
   fi
 
   if ! test -e "${ca_root_crl}"; then
@@ -96,7 +96,7 @@ function generate_ca_root() {
     inform "Generated revocation list:  ${ca_root_crl}"
     remove_stale "${depend_on_ca_root_crl[@]}"
   else
-    inform "Revocation list exists:  ${ca_root_crl}"
+    debug "Revocation list exists:  ${ca_root_crl}"
   fi
 
   if ! test -e "${ca_root_crl_der}"; then
@@ -105,6 +105,6 @@ function generate_ca_root() {
     inform "Generated DER encoded revocation list:  ${ca_root_crl_der}"
     remove_stale "${depend_on_ca_root_crl_der[@]}"
   else
-    inform "DER encoded revocation list exists:  ${ca_root_crl_der}"
+    debug "DER encoded revocation list exists:  ${ca_root_crl_der}"
   fi
 }

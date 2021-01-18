@@ -7,7 +7,7 @@ function generate_host() {
         || fail $ERR_MKDIR "Failed to create directory:  ${host_dir}"
       inform "Created directory:  ${host_dir}"
     else
-      inform "Directory exists:  ${host_dir}"
+      debug "Directory exists:  ${host_dir}"
     fi
 
     if ! test -e "${sensitive_host_dir}"; then
@@ -15,7 +15,7 @@ function generate_host() {
         || fail $ERR_MKDIR "Failed to create directory:  ${sensitive_host_dir}"
       inform "Created directory:  ${sensitive_host_dir}"
     else
-      inform "Directory exists:  ${sensitive_host_dir}"
+      debug "Directory exists:  ${sensitive_host_dir}"
     fi
 
     if ! test -e "${host_conf}"; then
@@ -24,19 +24,19 @@ function generate_host() {
 
       sed -i 's/DOMAIN/'${domain}'/' "${host_conf}" \
         || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
-      inform "Injected domain name:  ${1}"
+      debug "Injected domain name:  ${1}"
 
       sed -i 's/COMMON_NAME/'${1}'/' "${host_conf}" \
         || fail $ERR_CONF "Failed to inject common name:  ${1}"
-      inform "Injected common name:  ${1}"
+      debug "Injected common name:  ${1}"
 
       sed -i 's#CA_DIR#'${certificate_authority}'#' "${host_conf}" \
         || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
-      inform "Injected certificate authority directory:  ${certificate_authority}"
+      debug "Injected certificate authority directory:  ${certificate_authority}"
 
       sed -i 's#CA_SDIR#'${sensitive}'#' "${host_conf}" \
         || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
-      inform "Injected certificate sensitive authority directory:  ${sensitive}"
+      debug "Injected certificate sensitive authority directory:  ${sensitive}"
 
       n=1
       for shortname in "${@}"; do
@@ -46,20 +46,20 @@ function generate_host() {
         echo -e "DNS.${n}                   = ${shortname}.${domain}" \
           >> "${host_conf}" \
           || fail $ERR_CONF "Failed to append configuration for short name:  ${shortname}"
-        inform "Appended short name:  ${shortname}"
+        debug "Appended short name:  ${shortname}"
         let n++
         if echo "${shortname}" | grep -q '^dmz$'; then
           echo -e "DNS.${n}                   = ${domain}" \
             >> "${host_conf}" \
             || fail $ERR_CONF "Failed to append configuration for root domain name:  ${domain}"
-          inform "Appended root domain name:  ${domain}"
+          debug "Appended root domain name:  ${domain}"
           let n++
         fi
       done
       inform "Generated conf:  ${host_conf}"
       remove_stale "${depend_on_host_conf[@]}"
     else
-      inform "Conf exists:  ${host_conf}"
+      debug "Conf exists:  ${host_conf}"
     fi
 
     if ! test -e "${host_key}"; then
@@ -68,7 +68,7 @@ function generate_host() {
       inform "Generated host key:  ${host_key}"
       remove_stale "${depend_on_host_key[@]}"
     else
-      inform "Key exists:  ${host_key}"
+      debug "Key exists:  ${host_key}"
     fi
 
     if ! test -e "${host_csr}"; then
@@ -77,7 +77,7 @@ function generate_host() {
       inform "Generated CSR:  ${host_csr}"
       remove_stale "${depend_on_host_csr[@]}"
     else
-      inform "CSR exists:  ${host_csr}"
+      debug "CSR exists:  ${host_csr}"
     fi
 
     if ! test -e "${host_cert}"; then
@@ -87,7 +87,7 @@ function generate_host() {
       inform "Generated certificate:  ${host_cert}"
       remove_stale "${depend_on_host_cert[@]}"
     else
-      inform "Certificate exists:  ${host_cert}"
+      debug "Certificate exists:  ${host_cert}"
     fi
 
     if ! test -e "${cert_chain}"; then
@@ -96,7 +96,7 @@ function generate_host() {
       inform "Created certificate chain:  ${cert_chain}"
       remove_stale "${depend_on_cert_chain[@]}"
     else
-      inform "Certificate chain exists:  ${cert_chain}"
+      debug "Certificate chain exists:  ${cert_chain}"
     fi
 
     if ! test -e "${host_crl}"; then
@@ -106,7 +106,7 @@ function generate_host() {
       inform "Generated revocation list:  ${host_crl}"
       remove_stale "${depend_on_host_crl[@]}"
     else
-      inform "Revocation list exists:  ${host_crl}"
+      debug "Revocation list exists:  ${host_crl}"
     fi
 
     if ! test -e "${host_crl_der}"; then
@@ -115,7 +115,7 @@ function generate_host() {
       inform "Generated DER encoded revocation list:  ${host_crl_der}"
       remove_stale "${depend_on_host_crl_der[@]}"
     else
-      inform "DER encoded revocation list exists:  ${host_crl}"
+      debug "DER encoded revocation list exists:  ${host_crl}"
     fi
   fi
 }

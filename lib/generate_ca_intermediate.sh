@@ -6,7 +6,7 @@ function generate_ca_intermediate() {
       || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_dir}"
     inform "Created directory:  ${ca_intermediate_dir}"
   else
-    inform "Directory exists:  ${ca_intermediate_dir}"
+    debug "Directory exists:  ${ca_intermediate_dir}"
   fi
 
   if ! test -e "${ca_intermediate_newcerts}"; then
@@ -14,7 +14,7 @@ function generate_ca_intermediate() {
       || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_newcerts}"
     inform "Created directory:  ${ca_intermediate_newcerts}"
   else
-    inform "Directory exists:  ${ca_intermediate_newcerts}"
+    debug "Directory exists:  ${ca_intermediate_newcerts}"
   fi
 
   if ! test -e "${ca_intermediate_sensitive_dir}"; then
@@ -22,7 +22,7 @@ function generate_ca_intermediate() {
       || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_sensitive_dir}"
     inform "Created directory:  ${ca_intermediate_sensitive_dir}"
   else
-    inform "Directory exists:  ${ca_intermediate_sensitive_dir}"
+    debug "Directory exists:  ${ca_intermediate_sensitive_dir}"
   fi
 
   if ! test -e "${ca_intermediate_conf}"; then
@@ -31,17 +31,17 @@ function generate_ca_intermediate() {
 
     sed -i 's/DOMAIN/'${domain}'/' "${ca_intermediate_conf}" \
       || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
-    inform "Injected domain name:  ${1}"
+    debug "Injected domain name:  ${1}"
     sed -i 's#CA_DIR#'${certificate_authority}'#' "${ca_intermediate_conf}" \
       || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
-    inform "Injected certificate authority directory:  ${certificate_authority}"
+    debug "Injected certificate authority directory:  ${certificate_authority}"
     sed -i 's#CA_SDIR#'${sensitive}'#' "${ca_intermediate_conf}" \
       || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
-    inform "Injected certificate sensitive authority directory:  ${sensitive}"
+    debug "Injected certificate sensitive authority directory:  ${sensitive}"
     inform "Generated conf:  ${ca_intermediate_conf}"
     remove_stale "${depend_on_ca_intermediate_conf[@]}"
   else
-    inform "Conf exists:  ${ca_intermediate_conf}"
+    debug "Conf exists:  ${ca_intermediate_conf}"
   fi
 
   if ! test -e "${ca_intermediate_key}"; then
@@ -61,7 +61,7 @@ function generate_ca_intermediate() {
     inform "Generated key:  ${ca_intermediate_key}"
     remove_stale "${depend_on_ca_intermediate_key[@]}"
   else
-    inform "Key exists:  ${ca_intermediate_key}"
+    debug "Key exists:  ${ca_intermediate_key}"
   fi
 
   if ! test -e "${ca_intermediate_csr}"; then
@@ -71,7 +71,7 @@ function generate_ca_intermediate() {
     inform "Generated CSR:  ${ca_intermediate_csr}"
     remove_stale "${depend_on_ca_intermediate_csr[@]}"
   else
-    inform "CSR exists:  ${ca_intermediate_csr}"
+    debug "CSR exists:  ${ca_intermediate_csr}"
   fi
 
   if ! test -e "${ca_intermediate_cert}"; then
@@ -81,7 +81,7 @@ function generate_ca_intermediate() {
     inform "Generated certificate:  ${ca_intermediate_cert}"
     remove_stale "${depend_on_ca_intermediate_cert[@]}"
   else
-    inform "Certificate exists:  ${ca_intermediate_cert}"
+    debug "Certificate exists:  ${ca_intermediate_cert}"
   fi
 
   if ! test -e "${ca_intermediate_cert_der}"; then
@@ -89,7 +89,7 @@ function generate_ca_intermediate() {
       || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert_der}"
     inform "Generated certificate:  ${ca_intermediate_cert_der}"
   else
-    inform "Certificate exists:  ${ca_intermediate_cert_der}"
+    debug "Certificate exists:  ${ca_intermediate_cert_der}"
   fi
 
   if ! test -e "${ca_intermediate_crl}"; then
@@ -99,7 +99,7 @@ function generate_ca_intermediate() {
     inform "Generated revocation list:  ${ca_intermediate_crl}"
     remove_stale "${depend_on_ca_intermediate_crl[@]}"
   else
-    inform "Revocation list exists:  ${ca_intermediate_crl}"
+    debug "Revocation list exists:  ${ca_intermediate_crl}"
   fi
 
   if ! test -e "${ca_intermediate_crl_der}"; then
@@ -108,6 +108,6 @@ function generate_ca_intermediate() {
     inform "Generated DER encoded revocation list:  ${ca_intermediate_crl_der}"
     remove_stale "${depend_on_ca_intermediate_crl_der[@]}"
   else
-    inform "DER encoded revocation list exists:  ${ca_intermediate_crl}"
+    debug "DER encoded revocation list exists:  ${ca_intermediate_crl}"
   fi
 }
