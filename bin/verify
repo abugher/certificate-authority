@@ -1,0 +1,38 @@
+#!/bin/bash
+# verify - Verify an SSL certificate, specified by a short hostname.
+# verify <shorthostname>
+
+OLDPWD="${PWD}"
+cd "${0%/*}/.."
+certificate_authority="${PWD}"
+cd "${OLDPWD}"
+if ! . "${certificate_authority}/lib/common.sh"; then
+  echo "Failed to load common dependencies." >&2
+  exit 1
+fi
+
+if test "${#}" -ne 1; then
+  fail $ERR_USAGE "Specify one short hostname."
+fi
+
+
+# sanity check
+for prereq in "${verify_prereqs}"; do
+  if ! test -e "${prereq}"; then
+    fail $ERR_PREREQ "Required file does not exist:  ${prereq}"
+  fi
+done
+
+# verify
+#openssl verify \
+#  -crl_check_all \
+#  -CAfile "${ca_root_cert}" -CRLfile "${ca_root_crl}" \
+#  -untrusted "${ca_intermediate_cert}" -CRLfile "${ca_intermediate_crl}" \
+#  -CRLfile "${host_crl}" \
+#  "${host_cert}" \
+openssl verify \
+  -CAfile "${ca_root_cert}" \
+  -untrusted "${ca_intermediate_cert}" \
+  "${host_cert}" \
+  || fail $ERR_CERT "Failed to verify certificate:  ${host_cert}"
+inform "Verified certificate:  ${host_cert}"

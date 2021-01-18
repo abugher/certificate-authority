@@ -1,0 +1,32 @@
+#!/bin/bash
+# revoke - Revoke an SSL certificate, specified by a short hostname.
+# revoke <shorthostname>
+
+OLDPWD="${PWD}"
+cd "${0%/*}/.."
+certificate_authority="${PWD}"
+cd "${OLDPWD}"
+if ! . "${certificate_authority}/lib/common.sh"; then
+  echo "Failed to load common dependencies." >&2
+  exit 1
+fi
+
+if test "${#}" -ne 1; then
+  fail $ERR_USAGE "Specify one short hostname."
+fi
+
+# sanity check
+
+for prereq in ca_intermediate_conf ca_intermediate_key host_cert; do
+  if ! test -e "${!prereq}"; then
+    fail $ERR_PREREQ "Required file does not exist:  ${!prereq}"
+  fi
+done
+
+# revoke
+pass show "${ca_intermediate_key_pass_path}" \
+  | openssl ca -passin stdin -config ${ca_intermediate_conf} -revoke ${host_cert} \
+  || fail $ERR_CERT "Failed to revoke certificate:  ${host_cert}"
+pass show "${ca_intermediate_key_pass_path}" \
+  | openssl ca -passin stdin -config ${ca_intermediate_conf} -gencrl -out ${ca_intermediate_crl} \
+  || fail $ERR_CERT "Failed to regenerate CRL:  ${ca_intermediate_crl}"

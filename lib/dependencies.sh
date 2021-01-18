@@ -1,0 +1,121 @@
+#!/bin/bash
+
+verify_prereqs=(
+  "${ca_root_cert}"
+  "${ca_root_crl}"
+  "${ca_intermediate_cert}"
+  "${ca_intermediate_crl}"
+  "${host_crl}"
+  "${host_cert}"
+)
+
+generate_prereqs=(
+  "${ca_root_conf_template}"
+  "${ca_intermediate_conf_template}"
+)
+
+if test 'no' == "${ca_only}"; then
+  generate_prereqs+=(
+    "${host_conf_template}"
+  )
+  depend_on_host_conf_template=(
+    $host_conf
+  )
+  depend_on_host_conf=(
+    $host_csr
+  )
+  depend_on_host_csr=(
+    $host_cert
+  )
+  depend_on_host_cert=(
+    $host_chain
+    $host_crl
+    $host_crl_der
+  )
+fi
+
+if test 'no' == "${ca_only}"; then
+  depend_on_ca_root_conf_template=(
+    $ca_root_conf
+  )
+fi
+depend_on_ca_root_conf=(
+  $ca_root_cert
+  $ca_root_crl
+)
+depend_on_ca_root_key=(
+  $ca_root_cert
+  $ca_root_crl
+  $ca_intermediate_cert
+)
+if test 'no' == "${ca_only}"; then
+  depend_on_ca_root_cert=(
+    $cert_chain
+  )
+fi
+depend_on_ca_root_cert+=(
+  $ca_root_cert_der
+)
+depend_on_ca_root_crl=(
+  $ca_root_crl_der
+)
+depend_on_ca_root_crl_der=(
+)
+depend_on_ca_intermediate_conf_template=(
+  $ca_intermediate_conf
+)
+depend_on_ca_intermediate_conf=(
+  $ca_intermediate_csr
+  $ca_intermediate_crl
+)
+depend_on_ca_intermediate_key=(
+  $ca_intermediate_csr
+  $ca_intermediate_crl
+)
+if test 'no' == "${ca_only}"; then
+  depend_on_ca_intermediate_key+=(
+    $host_cert
+  )
+fi
+depend_on_ca_intermediate_csr=(
+  $ca_intermediate_cert
+)
+if test 'no' == "${ca_only}"; then
+  depend_on_ca_intermediate_cert=(
+    $cert_chain
+  )
+fi
+depend_on_ca_intermediate_cert+=(
+  $ca_intermediate_cert_der
+)
+depend_on_ca_intermediate_crl=(
+  $ca_intermediate_crl_der
+)
+depend_on_ca_intermediate_crl_der=(
+)
+if test 'no' == "${ca_only}"; then
+  depend_on_host_conf_template=(
+    $host_conf
+  )
+  depend_on_host_conf=(
+    $host_csr
+    $host_crl
+  )
+  depend_on_host_key=(
+    $host_csr
+    $host_crl
+  )
+  depend_on_host_csr=(
+    $host_cert
+  )
+  depend_on_host_cert=(
+    $cert_chain
+  )
+  depend_on_cert_chain=(
+  )
+  depend_on_host_crl=(
+    $host_crl_der
+  )
+  depend_on_host_crl_der=(
+  )
+fi

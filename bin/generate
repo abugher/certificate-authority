@@ -3,31 +3,29 @@
 # generate <shorthostname> [shorthostname ...]
 #
 # Much of this logic could be a make file.  Maybe it should be.
-# Password handling would be a really nice addition.
 
-
-source common.sh || {
-  echo 'Error:  Current directory looks wrong.  Exiting.' >&2
+OLDPWD="${PWD}"
+cd "${0%/*}/.."
+certificate_authority="${PWD}"
+cd "${OLDPWD}"
+if ! . "${certificate_authority}/lib/common.sh"; then
+  echo "Failed to load common dependencies." >&2
   exit 1
-}
-
+fi
 
 if test 'ca' = "${host}"; then
   fail $ERR_USAGE "'ca' may not be a primary hostname."
 fi
 
-
 # sanity check
-
-for prereq in "${prereqs[@]}"; do
-  if ! test -e "${!prereq}"; then
-    fail $ERR_PREREQ "Required file does not exist:  ${!prereq}"
+for prereq in "${generate_prereqs[@]}"; do
+  if ! test -e "${prereq}"; then
+    fail $ERR_PREREQ "Required file does not exist:  ${prereq}"
   fi
 done
 
 
 # CA root material
-
 if ! test -e "${ca_root_dir}"; then
   mkdir -p "${ca_root_dir}" \
     || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_dir}"
@@ -42,6 +40,12 @@ if ! test -e "${ca_root_newcerts}"; then
   inform "Created directory:  ${ca_root_newcerts}"
 else
   inform "Directory exists:  ${ca_root_newcerts}"
+fi
+
+if ! test -e "${sensitive}"; then
+  fail $ERR_PREREQ "Failed to find sensitive directory:  ${sensitive}"
+else
+  inform "Directory exists:  ${sensitive}"
 fi
 
 if ! test -e "${ca_root_sensitive_dir}"; then
@@ -119,7 +123,6 @@ fi
 
 
 # CA intermediate material
-
 if ! test -e "${ca_intermediate_dir}"; then
   mkdir -p "${ca_intermediate_dir}" \
     || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_dir}"
@@ -224,7 +227,6 @@ fi
 
 
 # host material
-
 if ! test 'yes' = "${ca_only}"; then
   if ! test -e "${host_dir}"; then
     mkdir -p "${host_dir}" \

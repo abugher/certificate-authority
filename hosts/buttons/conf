@@ -68,3 +68,4 @@ emailAddress            = optional
 
 [ alt_names ]
 DNS.1                   = buttons.neuronpointer.net
+DNS.2                   = remote.neuronpointer.net
