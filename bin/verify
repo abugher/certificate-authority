@@ -24,15 +24,11 @@ for prereq in "${verify_prereqs}"; do
 done
 
 # verify
-#openssl verify \
-#  -crl_check_all \
-#  -CAfile "${ca_root_cert}" -CRLfile "${ca_root_crl}" \
-#  -untrusted "${ca_intermediate_cert}" -CRLfile "${ca_intermediate_crl}" \
-#  -CRLfile "${host_crl}" \
-#  "${host_cert}" \
 openssl verify \
-  -CAfile "${ca_root_cert}" \
-  -untrusted "${ca_intermediate_cert}" \
+  -crl_check_all \
+  -CAfile "${ca_root_cert}" -CRLfile "${ca_root_crl}" \
+  -untrusted "${ca_intermediate_cert}" -CRLfile "${ca_intermediate_crl}" \
+  -CRLfile "${host_crl}" \
   "${host_cert}" \
   || fail $ERR_CERT "Failed to verify certificate:  ${host_cert}"
 inform "Verified certificate:  ${host_cert}"

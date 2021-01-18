@@ -106,7 +106,7 @@ fi
 
 if ! test -e "${ca_root_crl}"; then
   { pass show "${ca_root_key_pass_path}"; yes; } \
-    | openssl ca -passin stdin -config "${ca_root_conf}" -gencrl -out "${ca_root_crl}" \
+    | openssl ca -passin stdin -config "${ca_root_conf}" -gencrl -crldays "${crldays}" -out "${ca_root_crl}" \
     || fail $ERR_CERT "Failed to generate revocation list:  ${ca_root_crl}"
   inform "Generated revocation list:  ${ca_root_crl}"
 else
@@ -208,7 +208,7 @@ fi
 
 if ! test -e "${ca_intermediate_crl}"; then
   { pass show "${ca_intermediate_key_pass_path}"; yes; } \
-    | openssl ca -passin stdin -config "${ca_intermediate_conf}" -gencrl -out "${ca_intermediate_crl}" \
+    | openssl ca -passin stdin -config "${ca_intermediate_conf}" -gencrl -crldays "${crldays}" -out "${ca_intermediate_crl}" \
     || fail $ERR_CERT "Failed to generate revocation list:  ${ca_intermediate_crl}"
   inform "Generated revocation list:  ${ca_intermediate_crl}"
   remove_stale "${depend_on_ca_intermediate_crl[@]}"
@@ -319,7 +319,7 @@ if ! test 'yes' = "${ca_only}"; then
 
   if ! test -e "${host_crl}"; then
     { pass show "${ca_intermediate_key_pass_path}"; yes; } \
-      | openssl ca -passin stdin -config "${host_conf}" -gencrl -out "${host_crl}" \
+      | openssl ca -passin stdin -config "${host_conf}" -gencrl -crldays "${crldays}" -out "${host_crl}" \
       || fail $ERR_CERT "Failed to generate revocation list:  ${host_crl}"
     inform "Generated revocation list:  ${host_crl}"
     remove_stale "${depend_on_host_crl[@]}"

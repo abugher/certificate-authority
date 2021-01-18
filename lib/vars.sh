@@ -11,6 +11,7 @@ fi
 
 domain='neuronpointer.net'
 prefix="${0}:  "
+crldays=365
 
 ca_root_dir=${certificate_authority}/ca/root
 ca_root_newcerts=${ca_root_dir}/newcerts
