@@ -3,7 +3,6 @@
 # revoke <shorthostname>
 
 # Find self.
-OLDPWD="${PWD}"
 cd "${0%/*}/.."
 certificate_authority="${PWD}"
 cd "${OLDPWD}"
