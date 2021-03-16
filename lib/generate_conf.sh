@@ -13,7 +13,7 @@ function generate_conf() {
   fi
   conf="${1}"
   shift
-  template="${2}"
+  template="${1}"
   shift
 
   if ! test -e "${conf}"; then
