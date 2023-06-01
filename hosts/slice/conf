@@ -43,8 +43,8 @@ emailAddress            = optional
 default_ca	        = CA_default
 
 [ CA_default ]
-dir                     = /home/aaron/control_center/certificate_authority/ca/intermediate
-sdir                    = /home/aaron/control_center/certificate_authority/../sensitive_certificate_authority/ca/intermediate
+dir                     = /home/aaron/control_center/certificate-authority/ca/intermediate
+sdir                    = /home/aaron/control_center/certificate-authority/../sensitive-certificate-authority/ca/intermediate
 database                = $dir/index.txt
 new_certs_dir           = $dir/newcerts
 certificate             = $dir/cert.pem

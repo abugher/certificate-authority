@@ -24,12 +24,12 @@ function generate_ca_root() {
     debug "Directory exists:  ${sensitive}"
   fi
 
-  if ! test -e "${ca_root_sensitive_dir}"; then
-    mkdir -p "${ca_root_sensitive_dir}" \
-      || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_sensitive_dir}"
-    inform "Created directory:  ${ca_root_sensitive_dir}"
+  if ! test -e "${ca_root_sensitive-dir}"; then
+    mkdir -p "${ca_root_sensitive-dir}" \
+      || fail $ERR_MKDIR "Failed to create directory:  ${ca_root_sensitive-dir}"
+    inform "Created directory:  ${ca_root_sensitive-dir}"
   else
-    debug "Directory exists:  ${ca_root_sensitive_dir}"
+    debug "Directory exists:  ${ca_root_sensitive-dir}"
   fi
 
   generate_conf "${ca_root_conf}" "${ca_root_conf_template}"

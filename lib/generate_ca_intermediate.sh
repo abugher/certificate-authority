@@ -17,12 +17,12 @@ function generate_ca_intermediate() {
     debug "Directory exists:  ${ca_intermediate_newcerts}"
   fi
 
-  if ! test -e "${ca_intermediate_sensitive_dir}"; then
-    mkdir -p "${ca_intermediate_sensitive_dir}" \
-      || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_sensitive_dir}"
-    inform "Created directory:  ${ca_intermediate_sensitive_dir}"
+  if ! test -e "${ca_intermediate_sensitive-dir}"; then
+    mkdir -p "${ca_intermediate_sensitive-dir}" \
+      || fail $ERR_MKDIR "Failed to create directory:  ${ca_intermediate_sensitive-dir}"
+    inform "Created directory:  ${ca_intermediate_sensitive-dir}"
   else
-    debug "Directory exists:  ${ca_intermediate_sensitive_dir}"
+    debug "Directory exists:  ${ca_intermediate_sensitive-dir}"
   fi
 
   generate_conf "${ca_intermediate_conf}" "${ca_intermediate_conf_template}"

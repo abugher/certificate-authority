@@ -4,7 +4,7 @@
 
 # Find self.
 cd "${0%/*}/.."
-certificate_authority="${PWD}"
+certificate-authority="${PWD}"
 cd "${OLDPWD}"
 
 #Load libraries.
@@ -13,7 +13,7 @@ libs=(
   'verify_validity'
   'verify_cert_matches_key'
 )
-if ! . "${certificate_authority}/lib/common.sh"; then
+if ! . "${certificate-authority}/lib/common.sh"; then
   echo "Failed to load common dependencies." >&2
   exit 1
 fi
