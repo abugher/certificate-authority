@@ -2,7 +2,7 @@
 
 # Find self.
 cd "${0%/*}/.."
-certificate-authority="${PWD}"
+certificate_authority="${PWD}"
 cd "${OLDPWD}"
 
 # Load libraries.
@@ -13,7 +13,7 @@ libs=(
   'generate_ca_intermediate'
   'generate_host'
 )
-if ! . "${certificate-authority}/lib/common.sh"; then
+if ! . "${certificate_authority}/lib/common.sh"; then
   echo "Failed to load common dependencies." >&2
   exit 1
 fi
