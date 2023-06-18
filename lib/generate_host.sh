@@ -9,12 +9,12 @@ function generate_host() {
     debug "Directory exists:  ${host_dir}"
   fi
 
-  if ! test -e "${sensitive-host_dir}"; then
-    mkdir -p "${sensitive-host_dir}" \
-      || fail $ERR_MKDIR "Failed to create directory:  ${sensitive-host_dir}"
-    inform "Created directory:  ${sensitive-host_dir}"
+  if ! test -e "${sensitive_host_dir}"; then
+    mkdir -p "${sensitive_host_dir}" \
+      || fail $ERR_MKDIR "Failed to create directory:  ${sensitive_host_dir}"
+    inform "Created directory:  ${sensitive_host_dir}"
   else
-    debug "Directory exists:  ${sensitive-host_dir}"
+    debug "Directory exists:  ${sensitive_host_dir}"
   fi
 
   generate_conf "${host_conf}" "${host_conf_template}" "${@}"
