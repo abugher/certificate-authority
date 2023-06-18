@@ -22,9 +22,9 @@ function generate_conf() {
     sed -i 's/DOMAIN/'${domain}'/' "${conf}" \
       || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
     debug "Injected domain name:  ${1}"
-    sed -i 's#CA_DIR#'${certificate-authority}'#' "${conf}" \
-      || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate-authority}"
-    debug "Injected certificate authority directory:  ${certificate-authority}"
+    sed -i 's#CA_DIR#'${certificate_authority}'#' "${conf}" \
+      || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
+    debug "Injected certificate authority directory:  ${certificate_authority}"
     sed -i 's#CA_SDIR#'${sensitive}'#' "${conf}" \
       || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
     debug "Injected certificate sensitive authority directory:  ${sensitive}"
