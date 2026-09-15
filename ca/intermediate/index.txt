@@ -14,3 +14,5 @@ V	330705203107Z		100C	unknown	/CN=COMMON_NAME.neuronpointer.net
 V	340208204836Z		100D	unknown	/CN=COMMON_NAME.neuronpointer.net
 V	340208224012Z		100E	unknown	/CN=COMMON_NAME.neuronpointer.net
 V	350515221406Z		100F	unknown	/CN=COMMON_NAME.neuronpointer.net
+V	360912140831Z		1010	unknown	/CN=files.neuronpointer.net
+V	360912141645Z		1011	unknown	/CN=neuron.neuronpointer.net
