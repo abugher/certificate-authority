@@ -39,7 +39,7 @@ function generate_host() {
 
   if ! test -e "${host_cert}"; then
     { pass show "${ca_intermediate_key_pass_path}"; yes; } \
-      | openssl ca --passin stdin -config "${ca_intermediate_conf}" -extensions v3_req -days $(( 365 * 10 )) -notext -md sha256 -in "${host_csr}" -out "${host_cert}" \
+      | openssl ca --passin stdin -config "${ca_intermediate_conf}" -extensions v3_req -notext -md sha256 -in "${host_csr}" -out "${host_cert}" \
       || fail $ERR_CERT "Failed to generate certificate:  ${host_cert}"
     inform "Generated certificate:  ${host_cert}"
     remove_stale "${depend_on_host_cert[@]}"

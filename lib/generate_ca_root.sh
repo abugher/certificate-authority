@@ -57,7 +57,7 @@ function generate_ca_root() {
 
   if ! test -e "${ca_root_cert}"; then
     { pass show "${ca_root_key_pass_path}"; yes; } \
-      | openssl req -passin stdin -config "${ca_root_conf}" -key "${ca_root_key}" -new -x509 -days $(( 365 * 10 )) -sha256 -extensions v3_ca -out "${ca_root_cert}" \
+      | openssl req -passin stdin -config "${ca_root_conf}" -key "${ca_root_key}" -new -x509 -sha256 -extensions v3_ca -out "${ca_root_cert}" \
       || fail $ERR_CERT "Failed to generate certificate:  ${ca_root_cert}"
     inform "Generated certificate:  ${ca_root_cert}"
     remove_stale "${depend_on_ca_root_cert[@]}"

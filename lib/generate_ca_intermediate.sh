@@ -59,7 +59,7 @@ function generate_ca_intermediate() {
 
   if ! test -e "${ca_intermediate_cert}"; then
     { pass show "${ca_root_key_pass_path}"; yes; } \
-      | openssl ca -passin stdin -config "${ca_root_conf}" -extensions v3_intermediate_ca -days $(( 365 * 10 )) -notext -md sha256 -in "${ca_intermediate_csr}" -out "${ca_intermediate_cert}" \
+      | openssl ca -passin stdin -config "${ca_root_conf}" -extensions v3_intermediate_ca -notext -md sha256 -in "${ca_intermediate_csr}" -out "${ca_intermediate_cert}" \
       || fail $ERR_CERT "Failed to generate certificate:  ${ca_intermediate_cert}"
     inform "Generated certificate:  ${ca_intermediate_cert}"
     remove_stale "${depend_on_ca_intermediate_cert[@]}"
