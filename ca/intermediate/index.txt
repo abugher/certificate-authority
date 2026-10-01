@@ -16,3 +16,4 @@ V	21260902011536Z		100E	unknown	/CN=spy.neuronpointer.net
 V	21260902011536Z		100F	unknown	/CN=synapse.neuronpointer.net
 V	21260902011538Z		1010	unknown	/CN=COMMON_NAME.neuronpointer.net
 V	21260902011540Z		1011	unknown	/CN=COMMON_NAME.neuronpointer.net
+V	21260907022542Z		1012	unknown	/CN=meliora.neuronpointer.net
