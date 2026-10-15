@@ -15,13 +15,17 @@ function generate_conf() {
   shift
   template="${1}"
   shift
+  common_name="${1}"
 
   if ! test -e "${conf}"; then
     cp "${template}" "${conf}" \
       || fail $ERR_CONF "Failed to create conf:  ${conf}"
+    sed -i 's/COMMON_NAME/'${common_name}'/' "${conf}" \
+      || fail $ERR_CONF "Failed to inject common name:  ${common_name}"
+    debug "Injected common name:  ${common_name}"
     sed -i 's/DOMAIN/'${domain}'/' "${conf}" \
       || fail $ERR_CONF "Failed to inject domain name:  ${domain}"
-    debug "Injected domain name:  ${1}"
+    debug "Injected domain name:  ${domain}"
     sed -i 's#CA_DIR#'${certificate_authority}'#' "${conf}" \
       || fail $ERR_CONF "Failed to inject certificate authority directory:  ${certificate_authority}"
     debug "Injected certificate authority directory:  ${certificate_authority}"
