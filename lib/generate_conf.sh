@@ -31,6 +31,8 @@ function generate_conf() {
     debug "Injected certificate authority directory:  ${certificate_authority}"
     sed -i 's#CA_SDIR#'${sensitive}'#' "${conf}" \
       || fail $ERR_CONF "Failed to inject sensitive certificate authority directory:  ${sensitive}"
+    sed -i 's#LIFETIME#'${default_days}'#' "${conf}" \
+      || fail $ERR_CONF "Failed to inject default certificate lifetime."
     debug "Injected certificate sensitive authority directory:  ${sensitive}"
 
     if test 'no' = "${ca_only}"; then
