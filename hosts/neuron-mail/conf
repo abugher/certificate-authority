@@ -4,14 +4,14 @@ RANDFILE                = $ENV::HOME/.rnd
 [ req ]
 prompt                  = no
 req_extensions          = v3_req
-default_bits            = 2048
+default_bits            = 4096
 distinguished_name      = req_distinguished_name
 x509_extensions         = v3_req
 string_mask             = utf8only
 default_md              = sha256
 
 [ req_distinguished_name ]
-commonName              = neuron-mail.neuronpointer.net
+commonName              = COMMON_NAME.neuronpointer.net
 
 [ server_cert ]
 basicConstraints        = CA:FALSE
@@ -31,12 +31,20 @@ crlDistributionPoints   = URI:http://ca.neuronpointer.net/intermediate.crl.der
 [ crl_ext ]
 authorityKeyIdentifier  = keyid:always
 
+[ policy_token ]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
 [ ca ]
 default_ca	        = CA_default
 
 [ CA_default ]
 dir                     = /home/aaron/control-center/certificate-authority/ca/intermediate
-sdir                    = /home/aaron/control-center/sensitive-certificate-authority/ca/intermediate
+sdir                    = /home/aaron/control-center/certificate-authority/../sensitive-certificate-authority/ca/intermediate
 database                = $dir/index.txt
 new_certs_dir           = $dir/newcerts
 certificate             = $dir/cert.pem
@@ -49,7 +57,7 @@ x509_extensions         = usr_cert
 name_opt                = ca_default
 cert_opt                = ca_default
 copy_extensions         = copy
-default_days            = 3650
+default_days            = 36500
 default_crl_days        = 30
 default_md              = default
 preserve                = no
