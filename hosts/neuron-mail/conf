@@ -11,7 +11,7 @@ string_mask             = utf8only
 default_md              = sha256
 
 [ req_distinguished_name ]
-commonName              = COMMON_NAME.neuronpointer.net
+commonName              = neuron-mail.neuronpointer.net
 
 [ server_cert ]
 basicConstraints        = CA:FALSE
